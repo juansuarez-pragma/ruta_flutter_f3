@@ -1,0 +1,67 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+/build/
+/coverage/
+
+# Example app specific
+example/.dart_tool/
+example/build/
+example/.flutter-plugins
+example/.flutter-plugins-dependencies
+# Note: example/pubspec.lock is included for reproducibility
+
+# Platform-specific build outputs
+example/android/.gradle/
+example/android/app/build/
+example/android/build/
+example/android/local.properties
+example/ios/Pods/
+example/ios/.symlinks/
+example/ios/Flutter/Flutter.framework
+example/ios/Flutter/Flutter.podspec
+example/linux/flutter/ephemeral/
+example/macos/Flutter/ephemeral/
+example/windows/flutter/ephemeral/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+# Test coverage
+coverage/
+.test_coverage.dart
+
+# Temporary files
+*.tmp
+*.temp
+.fvm/
