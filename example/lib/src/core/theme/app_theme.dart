@@ -1,43 +1,19 @@
+import 'package:fake_store_design_system/fake_store_design_system.dart';
 import 'package:flutter/material.dart';
 
 /// Tema de la aplicación.
+///
+/// Esta clase actúa como puente entre la aplicación y el sistema de diseño,
+/// delegando la configuración de temas a [FakeStoreTheme].
 class AppTheme {
   AppTheme._();
 
-  /// Colores principales de la aplicación.
-  static const Color primaryColor = Color(0xFF6200EE);
-  static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color errorColor = Color(0xFFB00020);
-  static const Color backgroundColor = Color(0xFFF5F5F5);
-
   /// Tema claro de la aplicación.
-  static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        secondary: secondaryColor,
-        error: errorColor,
-      ),
-      scaffoldBackgroundColor: backgroundColor,
-      appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-      ),
-      cardTheme: CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-      ),
-    );
-  }
+  static ThemeData get lightTheme => FakeStoreTheme.light();
+
+  /// Tema oscuro de la aplicación.
+  static ThemeData get darkTheme => FakeStoreTheme.dark();
+
+  /// Obtiene los tokens del sistema de diseño desde el contexto.
+  static DSThemeData tokens(BuildContext context) => FakeStoreTheme.of(context);
 }

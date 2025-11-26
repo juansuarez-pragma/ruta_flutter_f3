@@ -1,4 +1,5 @@
 import 'package:fake_store_api_client/fake_store_api_client.dart';
+import 'package:fake_store_design_system/fake_store_design_system.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
@@ -47,12 +48,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fake Store'),
+      backgroundColor: tokens.colorSurfaceSecondary,
+      appBar: DSAppBar(
+        title: 'Fake Store',
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
+          DSIconButton(
+            icon: Icons.refresh,
             onPressed: () {
               setState(() {
                 _selectedCategory = null;
@@ -77,14 +81,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategoriesSection() {
+    final tokens = context.tokens;
+
     return FutureBuilder<Either<FakeStoreFailure, List<String>>>(
       future: _categoriesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox(
+          return SizedBox(
             height: 60,
             child: Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: DSCircularLoader(
+                size: DSLoaderSize.small,
+                color: tokens.colorBrandPrimary,
+              ),
             ),
           );
         }
@@ -95,17 +104,22 @@ class _HomePageState extends State<HomePage> {
 
         return snapshot.data!.fold(
           (failure) => Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
+            padding: const EdgeInsets.all(DSSpacing.base),
+            child: DSText(
               'Error cargando categorías',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+              variant: DSTextVariant.bodyMedium,
+              color: tokens.colorFeedbackError,
             ),
           ),
-          (categories) => SizedBox(
+          (categories) => Container(
+            color: tokens.colorSurfacePrimary,
             height: 60,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: DSSpacing.base,
+                vertical: DSSpacing.sm,
+              ),
               children: [
                 // Opción "Todos"
                 CategoryChip(

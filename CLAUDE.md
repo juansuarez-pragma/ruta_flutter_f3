@@ -119,15 +119,104 @@ example/
 ├── lib/
 │   ├── main.dart
 │   └── src/
-│       ├── app.dart                # MaterialApp
+│       ├── app.dart                # MaterialApp con soporte dark/light theme
 │       ├── core/
-│       │   ├── theme/              # AppTheme
+│       │   ├── theme/              # AppTheme (puente al Design System)
 │       │   └── di/                 # InjectionContainer
 │       ├── shared/
-│       │   └── widgets/            # Widgets reutilizables
+│       │   └── widgets/            # Wrappers de widgets del Design System
 │       └── features/
 │           ├── home/               # Página principal
 │           └── products/           # Lista y detalle de productos
+```
+
+## Integración con Design System
+
+El ejemplo utiliza el paquete `fake_store_design_system` para mantener consistencia visual. Esta integración sigue el patrón de **composición sobre herencia**.
+
+### Configuración del Tema
+
+El archivo `app_theme.dart` actúa como puente entre la aplicación y el Design System:
+
+```dart
+import 'package:fake_store_design_system/fake_store_design_system.dart';
+
+class AppTheme {
+  AppTheme._();
+
+  /// Tema claro de la aplicación.
+  static ThemeData get lightTheme => FakeStoreTheme.light();
+
+  /// Tema oscuro de la aplicación.
+  static ThemeData get darkTheme => FakeStoreTheme.dark();
+
+  /// Obtiene los tokens del sistema de diseño desde el contexto.
+  static DSThemeData tokens(BuildContext context) => FakeStoreTheme.of(context);
+}
+```
+
+### Uso de Tokens del Design System
+
+Para acceder a los tokens de diseño en cualquier widget:
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final tokens = context.tokens; // Extension method del Design System
+
+  return Container(
+    color: tokens.colorSurfacePrimary,
+    padding: const EdgeInsets.all(DSSpacing.base),
+    child: DSText(
+      'Texto',
+      variant: DSTextVariant.bodyMedium,
+      color: tokens.colorTextPrimary,
+    ),
+  );
+}
+```
+
+### Componentes del Design System Utilizados
+
+| Componente DS | Componente Local | Uso |
+|---------------|------------------|-----|
+| `DSAppBar` | - | Barra de navegación |
+| `DSButton` | - | Botones de acción |
+| `DSIconButton` | - | Botones con iconos |
+| `DSText` | - | Textos con tipografía consistente |
+| `DSProductCard` | `ProductCard` | Tarjeta de producto (wrapper) |
+| `DSProductGrid` | `ProductGrid` | Grid de productos (wrapper) |
+| `DSFilterChip` | `CategoryChip` | Chips de categoría (wrapper) |
+| `DSCircularLoader` | `LoadingIndicator` | Indicador de carga (wrapper) |
+| `DSEmptyState` | `EmptyState` | Estado vacío (wrapper) |
+| `DSErrorState` | `ErrorView` | Vista de error (wrapper) |
+| `DSBadge` | - | Badges informativos |
+
+### Constantes de Espaciado
+
+El Design System provee constantes de espaciado consistentes:
+
+```dart
+// Usar constantes del DS en lugar de valores hardcodeados
+const EdgeInsets.all(DSSpacing.base)    // 16.0
+const EdgeInsets.all(DSSpacing.sm)      // 8.0
+const EdgeInsets.all(DSSpacing.md)      // 12.0
+const EdgeInsets.all(DSSpacing.lg)      // 20.0
+const EdgeInsets.all(DSSpacing.xl)      // 24.0
+const EdgeInsets.all(DSSpacing.xxl)     // 32.0
+```
+
+### Soporte de Tema Oscuro
+
+La aplicación soporta tema claro y oscuro automáticamente basado en las preferencias del sistema:
+
+```dart
+MaterialApp(
+  theme: AppTheme.lightTheme,
+  darkTheme: AppTheme.darkTheme,
+  themeMode: ThemeMode.system,  // Automático según el sistema
+  // ...
+)
 ```
 
 ## Tests
@@ -149,6 +238,9 @@ flutter test --coverage
 3. **Equatable**: Se usa para comparación por valor en entidades y failures
 4. **Dispose**: Siempre llamar `client.dispose()` al terminar
 5. **Sealed classes**: Los subtipos de `FakeStoreFailure` deben estar en el mismo archivo
+6. **Design System**: El ejemplo usa `fake_store_design_system` - no usar widgets Material directamente, usar los componentes DS
+7. **Tema oscuro**: La app soporta tema claro/oscuro automáticamente via `ThemeMode.system`
+8. **Tokens de diseño**: Acceder vía `context.tokens` en lugar de hardcodear colores o espaciados
 
 ## Extensión del Paquete
 
@@ -161,11 +253,21 @@ Para agregar nuevas funcionalidades:
 
 ## Dependencias
 
+### Paquete Principal
+
 | Paquete | Propósito |
 |---------|-----------|
 | `http` | Cliente HTTP |
 | `dartz` | Tipo Either para manejo funcional |
 | `equatable` | Comparación por valor |
+
+### Ejemplo (example/)
+
+| Paquete | Propósito |
+|---------|-----------|
+| `fake_store_api_client` | Cliente de la API (este paquete) |
+| `fake_store_design_system` | Sistema de diseño con componentes y tokens |
+| `cached_network_image` | Caché de imágenes de red |
 
 ## Troubleshooting
 

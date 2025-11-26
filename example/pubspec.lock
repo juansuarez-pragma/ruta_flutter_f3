@@ -104,6 +104,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  fake_store_design_system:
+    dependency: "direct main"
+    description:
+      path: "../../../fase_4_design_system/fake_store_design_system"
+      relative: true
+    source: path
+    version: "1.0.0"
   ffi:
     dependency: transitive
     description:

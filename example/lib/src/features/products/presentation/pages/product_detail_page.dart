@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fake_store_api_client/fake_store_api_client.dart';
+import 'package:fake_store_design_system/fake_store_design_system.dart';
 import 'package:flutter/material.dart';
 
 /// Página de detalle de producto.
@@ -11,9 +12,12 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = context.tokens;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detalle del Producto'),
+      backgroundColor: tokens.colorSurfaceSecondary,
+      appBar: const DSAppBar(
+        title: 'Detalle del Producto',
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -23,118 +27,104 @@ class ProductDetailPage extends StatelessWidget {
             Container(
               width: double.infinity,
               height: 300,
-              color: Colors.white,
+              color: tokens.colorSurfacePrimary,
               child: Hero(
                 tag: 'product-${product.id}',
                 child: CachedNetworkImage(
                   imageUrl: product.image,
                   fit: BoxFit.contain,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
+                  placeholder: (context, url) => Center(
+                    child: DSCircularLoader(
+                      color: tokens.colorBrandPrimary,
+                    ),
                   ),
-                  errorWidget: (context, url, error) => const Icon(
+                  errorWidget: (context, url, error) => Icon(
                     Icons.image_not_supported_outlined,
-                    size: 64,
-                    color: Colors.grey,
+                    size: DSSizes.iconXl,
+                    color: tokens.colorIconSecondary,
                   ),
                 ),
               ),
             ),
             // Contenido
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(DSSpacing.base),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Categoría
-                  Chip(
-                    label: Text(
-                      product.category.toUpperCase(),
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
+                  DSBadge.info(
+                    text: product.category.toUpperCase(),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: DSSpacing.md),
                   // Título
-                  Text(
+                  DSText(
                     product.title,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    variant: DSTextVariant.headingMedium,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: DSSpacing.md),
                   // Rating y precio
                   Row(
                     children: [
                       // Rating
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                          horizontal: DSSpacing.md,
+                          vertical: DSSpacing.xs,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.amber.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(20),
+                          color: DSColors.warning100.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(DSBorderRadius.full),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(
                               Icons.star,
-                              size: 20,
-                              color: Colors.amber,
+                              size: DSSizes.iconSm,
+                              color: DSColors.warning500,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
+                            const SizedBox(width: DSSpacing.xs),
+                            DSText(
                               product.rating.rate.toStringAsFixed(1),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              variant: DSTextVariant.labelLarge,
                             ),
-                            Text(
+                            DSText(
                               ' (${product.rating.count} reseñas)',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                              ),
+                              variant: DSTextVariant.labelSmall,
+                              color: tokens.colorTextSecondary,
                             ),
                           ],
                         ),
                       ),
                       const Spacer(),
                       // Precio
-                      Text(
+                      DSText(
                         '\$${product.price.toStringAsFixed(2)}',
-                        style:
-                            Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        variant: DSTextVariant.headingLarge,
+                        color: tokens.colorBrandPrimary,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: DSSpacing.xl),
                   // Descripción
-                  Text(
+                  DSText(
                     'Descripción',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    variant: DSTextVariant.titleMedium,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
+                  const SizedBox(height: DSSpacing.sm),
+                  DSText(
                     product.description,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.grey[700],
-                          height: 1.5,
-                        ),
+                    variant: DSTextVariant.bodyLarge,
+                    color: tokens.colorTextSecondary,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: DSSpacing.xxl),
                   // Botón de agregar al carrito
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton.icon(
+                    child: DSButton.primary(
+                      text: 'Agregar al carrito',
+                      icon: Icons.shopping_cart_outlined,
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -142,14 +132,10 @@ class ProductDetailPage extends StatelessWidget {
                               '${product.title} agregado al carrito',
                             ),
                             behavior: SnackBarBehavior.floating,
+                            backgroundColor: tokens.colorFeedbackSuccess,
                           ),
                         );
                       },
-                      icon: const Icon(Icons.shopping_cart_outlined),
-                      label: const Text('Agregar al carrito'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
                     ),
                   ),
                 ],

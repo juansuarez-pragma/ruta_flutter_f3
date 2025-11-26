@@ -1,6 +1,10 @@
+import 'package:fake_store_design_system/fake_store_design_system.dart';
 import 'package:flutter/material.dart';
 
 /// Chip de categoría para la pantalla principal.
+///
+/// Utiliza [DSFilterChip] del sistema de diseño para mantener
+/// consistencia visual en toda la aplicación.
 class CategoryChip extends StatelessWidget {
   /// Nombre de la categoría.
   final String category;
@@ -21,13 +25,11 @@ class CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(_formatCategory(category)),
-        selected: isSelected,
-        onSelected: (_) => onTap?.call(),
-        selectedColor: Theme.of(context).colorScheme.primaryContainer,
-        checkmarkColor: Theme.of(context).colorScheme.primary,
+      padding: const EdgeInsets.only(right: DSSpacing.sm),
+      child: DSFilterChip(
+        label: _formatCategory(category),
+        isSelected: isSelected,
+        onTap: onTap,
       ),
     );
   }

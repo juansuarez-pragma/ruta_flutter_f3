@@ -13,6 +13,8 @@ class FakeStoreApp extends StatelessWidget {
       title: 'Fake Store Example',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       home: const HomePage(),
     );
   }
