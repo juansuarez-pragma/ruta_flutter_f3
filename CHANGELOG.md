@@ -62,6 +62,24 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [1.0.1] - 2025-11-27
+
+### Cambiado
+
+- **Ejemplo simplificado**: Reducido de 16 archivos a 1 solo archivo `main.dart`
+- **Removida dependencia de Design System**: El ejemplo ahora usa solo widgets Material
+- **Removida dependencia de cached_network_image**: Usa `Image.network` directamente
+- **Documentación actualizada**: README del ejemplo y CLAUDE.md reflejan la nueva estructura
+
+### Motivo
+
+El ejemplo ahora sigue las buenas prácticas de paquetes Flutter publicados:
+- Un solo archivo `main.dart` que demuestra todas las funcionalidades
+- Sin dependencias externas innecesarias
+- Código simple y fácil de entender
+
+---
+
 ## [Unreleased]
 
 ### Planeado

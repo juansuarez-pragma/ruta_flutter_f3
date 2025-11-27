@@ -11,9 +11,6 @@ dependencies:
     sdk: flutter
   fake_store_api_client:
     path: ../
-  fake_store_design_system:
-    path: ../../../fase_4_design_system/fake_store_design_system
-  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
