@@ -1,7 +1,7 @@
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/core/errors/errors.dart';
+import 'package:fake_store_api_client/src/core/network/http_status_codes.dart';
 import 'package:http/http.dart' as http;
-
-import '../errors/errors.dart';
-import 'http_status_codes.dart';
 
 /// Manejador de respuestas HTTP usando el patrón Strategy.
 ///
@@ -31,19 +31,19 @@ class HttpResponseHandler {
   static final Map<int, void Function(http.Response)> _strategies = {
     // 400 Bad Request: solicitud mal formada o inválida
     HttpStatusCodes.badRequest: (response) => throw const ClientException(
-      message: 'Solicitud incorrecta',
+      message: ErrorMessages.badRequest,
       statusCode: HttpStatusCodes.badRequest,
     ),
 
     // 401 Unauthorized: requiere autenticación
     HttpStatusCodes.unauthorized: (response) => throw const ClientException(
-      message: 'No autorizado',
+      message: ErrorMessages.unauthorized,
       statusCode: HttpStatusCodes.unauthorized,
     ),
 
     // 403 Forbidden: autenticado pero sin permisos
     HttpStatusCodes.forbidden: (response) => throw const ClientException(
-      message: 'Acceso prohibido',
+      message: ErrorMessages.forbidden,
       statusCode: HttpStatusCodes.forbidden,
     ),
 
@@ -52,18 +52,18 @@ class HttpResponseHandler {
 
     // 408 Request Timeout: tiempo de espera agotado
     HttpStatusCodes.requestTimeout: (response) =>
-        throw const ConnectionException(message: 'Tiempo de espera agotado'),
+        throw const ConnectionException(message: ErrorMessages.timeout),
 
     // 422 Unprocessable Entity: datos inválidos
     HttpStatusCodes.unprocessableEntity: (response) =>
         throw const ClientException(
-          message: 'Datos de solicitud inválidos',
+          message: ErrorMessages.unprocessableEntity,
           statusCode: HttpStatusCodes.unprocessableEntity,
         ),
 
     // 429 Too Many Requests: rate limiting
     HttpStatusCodes.tooManyRequests: (response) => throw const ClientException(
-      message: 'Demasiadas solicitudes',
+      message: ErrorMessages.tooManyRequests,
       statusCode: HttpStatusCodes.tooManyRequests,
     ),
 
@@ -75,20 +75,20 @@ class HttpResponseHandler {
 
     // 502 Bad Gateway: puerta de enlace incorrecta
     HttpStatusCodes.badGateway: (response) => throw const ServerException(
-      message: 'Puerta de enlace incorrecta',
+      message: ErrorMessages.badGateway,
       statusCode: HttpStatusCodes.badGateway,
     ),
 
     // 503 Service Unavailable: servicio no disponible
     HttpStatusCodes.serviceUnavailable: (response) =>
         throw const ServerException(
-          message: 'Servicio no disponible',
+          message: ErrorMessages.serviceUnavailable,
           statusCode: HttpStatusCodes.serviceUnavailable,
         ),
 
     // 504 Gateway Timeout: tiempo de espera de gateway
     HttpStatusCodes.gatewayTimeout: (response) => throw const ServerException(
-      message: 'Tiempo de espera de la puerta de enlace',
+      message: ErrorMessages.gatewayTimeout,
       statusCode: HttpStatusCodes.gatewayTimeout,
     ),
   };
@@ -124,8 +124,9 @@ class HttpResponseHandler {
     // 5xx - Errores del servidor
     if (HttpStatusCodes.isServerError(statusCode)) {
       throw ServerException(
-        message:
-            'Error del servidor: ${HttpStatusCodes.getDescription(statusCode)}',
+        message: ErrorMessages.serverErrorWithDescription(
+          HttpStatusCodes.getDescription(statusCode),
+        ),
         statusCode: statusCode,
       );
     }
@@ -133,15 +134,16 @@ class HttpResponseHandler {
     // 4xx - Errores del cliente
     if (HttpStatusCodes.isClientError(statusCode)) {
       throw ClientException(
-        message:
-            'Error del cliente: ${HttpStatusCodes.getDescription(statusCode)}',
+        message: ErrorMessages.clientErrorWithDescription(
+          HttpStatusCodes.getDescription(statusCode),
+        ),
         statusCode: statusCode,
       );
     }
 
     // Fallback para cualquier otro código no esperado
     throw ServerException(
-      message: 'Código de respuesta inesperado: $statusCode',
+      message: ErrorMessages.unexpectedStatusCode(statusCode),
       statusCode: statusCode,
     );
   }

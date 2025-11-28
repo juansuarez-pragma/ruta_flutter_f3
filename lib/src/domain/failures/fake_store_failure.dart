@@ -1,3 +1,5 @@
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+
 /// Clase base sellada para errores del cliente Fake Store.
 ///
 /// Proporciona un mensaje descriptivo del error ocurrido.
@@ -57,14 +59,11 @@ sealed class FakeStoreFailure {
 /// }
 /// ```
 final class ConnectionFailure extends FakeStoreFailure {
-  /// Mensaje por defecto para errores de conexión.
-  static const String defaultMessage =
-      'Error de conexión. Verifica tu conexión a internet.';
-
   /// Crea una nueva instancia de [ConnectionFailure].
   ///
-  /// [message] es opcional. Si no se proporciona, se usa [defaultMessage].
-  const ConnectionFailure([super.message = defaultMessage]);
+  /// [message] es opcional. Si no se proporciona, se usa
+  /// [ErrorMessages.connectionFailure].
+  const ConnectionFailure([super.message = ErrorMessages.connectionFailure]);
 }
 
 /// Error del servidor.
@@ -82,13 +81,11 @@ final class ConnectionFailure extends FakeStoreFailure {
 /// return Left(ServerFailure());
 /// ```
 final class ServerFailure extends FakeStoreFailure {
-  /// Mensaje por defecto para errores del servidor.
-  static const String defaultMessage = 'Error del servidor. Intenta más tarde.';
-
   /// Crea una nueva instancia de [ServerFailure].
   ///
-  /// [message] es opcional. Si no se proporciona, se usa [defaultMessage].
-  const ServerFailure([super.message = defaultMessage]);
+  /// [message] es opcional. Si no se proporciona, se usa
+  /// [ErrorMessages.serverFailure].
+  const ServerFailure([super.message = ErrorMessages.serverFailure]);
 }
 
 /// Recurso no encontrado.
@@ -110,13 +107,11 @@ final class ServerFailure extends FakeStoreFailure {
 /// );
 /// ```
 final class NotFoundFailure extends FakeStoreFailure {
-  /// Mensaje por defecto para recursos no encontrados.
-  static const String defaultMessage = 'Recurso no encontrado.';
-
   /// Crea una nueva instancia de [NotFoundFailure].
   ///
-  /// [message] es opcional. Si no se proporciona, se usa [defaultMessage].
-  const NotFoundFailure([super.message = defaultMessage]);
+  /// [message] es opcional. Si no se proporciona, se usa
+  /// [ErrorMessages.notFoundFailure].
+  const NotFoundFailure([super.message = ErrorMessages.notFoundFailure]);
 }
 
 /// Error de solicitud inválida.
@@ -132,12 +127,11 @@ final class NotFoundFailure extends FakeStoreFailure {
 /// // Podría retornar InvalidRequestFailure
 /// ```
 final class InvalidRequestFailure extends FakeStoreFailure {
-  /// Mensaje por defecto para solicitudes inválidas.
-  static const String defaultMessage =
-      'Solicitud inválida. Verifica los parámetros.';
-
   /// Crea una nueva instancia de [InvalidRequestFailure].
   ///
-  /// [message] es opcional. Si no se proporciona, se usa [defaultMessage].
-  const InvalidRequestFailure([super.message = defaultMessage]);
+  /// [message] es opcional. Si no se proporciona, se usa
+  /// [ErrorMessages.invalidRequestFailure].
+  const InvalidRequestFailure([
+    super.message = ErrorMessages.invalidRequestFailure,
+  ]);
 }

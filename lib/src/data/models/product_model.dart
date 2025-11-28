@@ -1,5 +1,5 @@
-import '../../domain/entities/entities.dart';
-import 'product_rating_model.dart';
+import 'package:fake_store_api_client/src/data/models/product_rating_model.dart';
+import 'package:fake_store_api_client/src/domain/entities/entities.dart';
 
 /// Modelo de datos para un producto.
 ///

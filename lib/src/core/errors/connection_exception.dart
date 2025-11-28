@@ -1,4 +1,5 @@
-import 'app_exception.dart';
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/core/errors/app_exception.dart';
 
 /// Excepción lanzada cuando hay un error de conexión de red.
 ///
@@ -19,9 +20,6 @@ import 'app_exception.dart';
 /// }
 /// ```
 class ConnectionException extends AppException {
-  /// Mensaje por defecto para errores de conexión.
-  static const String defaultMessage = 'Error de conexión';
-
   /// URI que causó el error de conexión (opcional).
   ///
   /// Útil para diagnóstico y logging.
@@ -38,7 +36,7 @@ class ConnectionException extends AppException {
   /// [uri] es la URI que causó el error (opcional).
   /// [originalError] es el mensaje del error original (opcional).
   const ConnectionException({
-    String message = defaultMessage,
+    String message = ErrorMessages.connectionError,
     this.uri,
     this.originalError,
   }) : super(message);

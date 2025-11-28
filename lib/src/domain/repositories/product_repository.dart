@@ -1,6 +1,6 @@
-import '../../core/either/either.dart';
-import '../entities/entities.dart';
-import '../failures/failures.dart';
+import 'package:fake_store_api_client/src/core/either/either.dart';
+import 'package:fake_store_api_client/src/domain/entities/entities.dart';
+import 'package:fake_store_api_client/src/domain/failures/failures.dart';
 
 /// Contrato para el repositorio de productos.
 ///

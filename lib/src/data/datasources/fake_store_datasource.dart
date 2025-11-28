@@ -1,6 +1,6 @@
-import '../../core/constants/constants.dart';
-import '../models/models.dart';
-import 'api_client.dart';
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/data/datasources/api_client.dart';
+import 'package:fake_store_api_client/src/data/models/models.dart';
 
 /// DataSource para la Fake Store API.
 ///

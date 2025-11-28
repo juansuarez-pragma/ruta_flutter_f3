@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/core/errors/errors.dart';
+import 'package:fake_store_api_client/src/core/network/network.dart';
+import 'package:fake_store_api_client/src/data/datasources/api_client.dart';
 import 'package:http/http.dart' as http;
-
-import '../../core/errors/errors.dart';
-import '../../core/network/network.dart';
-import 'api_client.dart';
 
 /// Implementación del cliente HTTP para la API.
 ///
@@ -39,8 +39,8 @@ class ApiClientImpl implements ApiClient {
 
   /// Headers comunes para todas las peticiones.
   Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    HttpHeaders.contentType: HttpHeaders.jsonContentType,
+    HttpHeaders.accept: HttpHeaders.jsonContentType,
   };
 
   @override
@@ -58,22 +58,22 @@ class ApiClientImpl implements ApiClient {
       final decodedJson = json.decode(response.body);
       return fromJson(decodedJson);
     } on TimeoutException {
-      throw ConnectionException(message: 'Tiempo de espera agotado', uri: uri);
+      throw ConnectionException(message: ErrorMessages.timeout, uri: uri);
     } on SocketException catch (e) {
       throw ConnectionException(
-        message: 'Sin conexión a internet',
+        message: ErrorMessages.noInternet,
         uri: uri,
         originalError: e.message,
       );
     } on http.ClientException catch (e) {
       throw ConnectionException(
-        message: 'Error de conexión con el servidor',
+        message: ErrorMessages.connectionError,
         uri: uri,
         originalError: e.message,
       );
     } on FormatException catch (e) {
       throw ServerException(
-        message: 'Respuesta del servidor inválida: ${e.message}',
+        message: ErrorMessages.invalidResponseWithDetail(e.message),
       );
     }
   }
@@ -96,22 +96,22 @@ class ApiClientImpl implements ApiClient {
           .map((item) => fromJsonList(item as Map<String, dynamic>))
           .toList();
     } on TimeoutException {
-      throw ConnectionException(message: 'Tiempo de espera agotado', uri: uri);
+      throw ConnectionException(message: ErrorMessages.timeout, uri: uri);
     } on SocketException catch (e) {
       throw ConnectionException(
-        message: 'Sin conexión a internet',
+        message: ErrorMessages.noInternet,
         uri: uri,
         originalError: e.message,
       );
     } on http.ClientException catch (e) {
       throw ConnectionException(
-        message: 'Error de conexión con el servidor',
+        message: ErrorMessages.connectionError,
         uri: uri,
         originalError: e.message,
       );
     } on FormatException catch (e) {
       throw ServerException(
-        message: 'Respuesta del servidor inválida: ${e.message}',
+        message: ErrorMessages.invalidResponseWithDetail(e.message),
       );
     }
   }
@@ -129,23 +129,37 @@ class ApiClientImpl implements ApiClient {
           json.decode(response.body) as List<dynamic>;
       return decodedJson.cast<T>();
     } on TimeoutException {
-      throw ConnectionException(message: 'Tiempo de espera agotado', uri: uri);
+      throw ConnectionException(message: ErrorMessages.timeout, uri: uri);
     } on SocketException catch (e) {
       throw ConnectionException(
-        message: 'Sin conexión a internet',
+        message: ErrorMessages.noInternet,
         uri: uri,
         originalError: e.message,
       );
     } on http.ClientException catch (e) {
       throw ConnectionException(
-        message: 'Error de conexión con el servidor',
+        message: ErrorMessages.connectionError,
         uri: uri,
         originalError: e.message,
       );
     } on FormatException catch (e) {
       throw ServerException(
-        message: 'Respuesta del servidor inválida: ${e.message}',
+        message: ErrorMessages.invalidResponseWithDetail(e.message),
       );
     }
   }
+}
+
+/// Constantes para headers HTTP.
+abstract class HttpHeaders {
+  HttpHeaders._();
+
+  /// Header Content-Type.
+  static const String contentType = 'Content-Type';
+
+  /// Header Accept.
+  static const String accept = 'Accept';
+
+  /// Valor para JSON content type.
+  static const String jsonContentType = 'application/json';
 }

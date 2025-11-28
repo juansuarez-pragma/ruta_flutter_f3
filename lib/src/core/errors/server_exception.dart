@@ -1,4 +1,5 @@
-import 'app_exception.dart';
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/core/errors/app_exception.dart';
 
 /// Excepción lanzada cuando el servidor responde con un error 5xx.
 ///
@@ -15,9 +16,6 @@ import 'app_exception.dart';
 /// }
 /// ```
 class ServerException extends AppException {
-  /// Mensaje por defecto para errores del servidor.
-  static const String defaultMessage = 'Error del servidor';
-
   /// Código de estado HTTP que causó el error (opcional).
   ///
   /// Valores típicos: 500, 502, 503, 504.
@@ -27,8 +25,10 @@ class ServerException extends AppException {
   ///
   /// [message] es el mensaje descriptivo del error.
   /// [statusCode] es el código HTTP del error (opcional).
-  const ServerException({String message = defaultMessage, this.statusCode})
-    : super(message);
+  const ServerException({
+    String message = ErrorMessages.serverError,
+    this.statusCode,
+  }) : super(message);
 
   /// Constructor simplificado que solo recibe el mensaje.
   const ServerException.withMessage(super.message) : statusCode = null;

@@ -1,8 +1,9 @@
-import '../../core/either/either.dart';
-import '../../core/errors/errors.dart';
-import '../../domain/domain.dart';
-import '../datasources/datasources.dart';
-import '../models/models.dart';
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/core/either/either.dart';
+import 'package:fake_store_api_client/src/core/errors/errors.dart';
+import 'package:fake_store_api_client/src/data/datasources/datasources.dart';
+import 'package:fake_store_api_client/src/data/models/models.dart';
+import 'package:fake_store_api_client/src/domain/domain.dart';
 
 /// Implementación del repositorio de productos.
 ///
@@ -74,7 +75,7 @@ class ProductRepositoryImpl implements ProductRepository {
     } on ClientException catch (e) {
       return Left(InvalidRequestFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure('Error inesperado: $e'));
+      return Left(ServerFailure(ErrorMessages.unexpectedError(e)));
     }
   }
 }

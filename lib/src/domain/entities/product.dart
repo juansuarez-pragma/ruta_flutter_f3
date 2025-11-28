@@ -1,4 +1,4 @@
-import 'product_rating.dart';
+import 'package:fake_store_api_client/src/domain/entities/product_rating.dart';
 
 /// Representa un producto de la tienda.
 ///

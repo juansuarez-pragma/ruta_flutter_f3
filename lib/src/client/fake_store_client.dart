@@ -1,11 +1,9 @@
+import 'package:fake_store_api_client/src/client/fake_store_config.dart';
+import 'package:fake_store_api_client/src/core/either/either.dart';
+import 'package:fake_store_api_client/src/core/network/network.dart';
+import 'package:fake_store_api_client/src/data/data.dart';
+import 'package:fake_store_api_client/src/domain/domain.dart';
 import 'package:http/http.dart' as http;
-
-import '../core/either/either.dart';
-
-import '../core/network/network.dart';
-import '../data/data.dart';
-import '../domain/domain.dart';
-import 'fake_store_config.dart';
 
 /// Cliente para interactuar con la Fake Store API.
 ///

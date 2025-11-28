@@ -1,4 +1,4 @@
-import '../../domain/entities/entities.dart';
+import 'package:fake_store_api_client/src/domain/entities/entities.dart';
 
 /// Modelo de datos para la calificación de un producto.
 ///

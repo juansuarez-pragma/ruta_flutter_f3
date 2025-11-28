@@ -1,4 +1,5 @@
-import 'app_exception.dart';
+import 'package:fake_store_api_client/src/core/constants/constants.dart';
+import 'package:fake_store_api_client/src/core/errors/app_exception.dart';
 
 /// Excepción lanzada cuando hay un error del cliente (4xx).
 ///
@@ -15,9 +16,6 @@ import 'app_exception.dart';
 /// }
 /// ```
 class ClientException extends AppException {
-  /// Mensaje por defecto para errores del cliente.
-  static const String defaultMessage = 'Error en la solicitud';
-
   /// Código de estado HTTP que causó el error (opcional).
   ///
   /// Valores típicos: 400, 401, 403, 422, 429.
@@ -27,8 +25,10 @@ class ClientException extends AppException {
   ///
   /// [message] es el mensaje descriptivo del error.
   /// [statusCode] es el código HTTP del error (opcional).
-  const ClientException({String message = defaultMessage, this.statusCode})
-    : super(message);
+  const ClientException({
+    String message = ErrorMessages.clientError,
+    this.statusCode,
+  }) : super(message);
 
   /// Constructor simplificado que solo recibe el mensaje.
   const ClientException.withMessage(super.message) : statusCode = null;
