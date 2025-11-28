@@ -12,6 +12,9 @@ import 'api_client.dart';
 ///
 /// Centraliza la lógica HTTP común: manejo de errores, headers,
 /// timeout y parseo de JSON.
+///
+/// Esto permite que los DataSources específicos solo se enfoquen en
+/// definir endpoints y mapear respuestas a modelos.
 class ApiClientImpl implements ApiClient {
   final http.Client _client;
   final String _baseUrl;
@@ -53,13 +56,26 @@ class ApiClientImpl implements ApiClient {
       final decodedJson = json.decode(response.body);
       return fromJson(decodedJson);
     } on TimeoutException {
-      throw const ConnectionException('Tiempo de espera agotado');
-    } on SocketException {
-      throw const ConnectionException('Sin conexión a internet');
-    } on http.ClientException {
-      throw const ConnectionException('Error de conexión con el servidor');
-    } on FormatException {
-      throw const ServerException('Respuesta del servidor inválida');
+      throw ConnectionException(
+        message: 'Tiempo de espera agotado',
+        uri: uri,
+      );
+    } on SocketException catch (e) {
+      throw ConnectionException(
+        message: 'Sin conexión a internet',
+        uri: uri,
+        originalError: e.message,
+      );
+    } on http.ClientException catch (e) {
+      throw ConnectionException(
+        message: 'Error de conexión con el servidor',
+        uri: uri,
+        originalError: e.message,
+      );
+    } on FormatException catch (e) {
+      throw ServerException(
+        message: 'Respuesta del servidor inválida: ${e.message}',
+      );
     }
   }
 
@@ -78,13 +94,26 @@ class ApiClientImpl implements ApiClient {
           .map((item) => fromJsonList(item as Map<String, dynamic>))
           .toList();
     } on TimeoutException {
-      throw const ConnectionException('Tiempo de espera agotado');
-    } on SocketException {
-      throw const ConnectionException('Sin conexión a internet');
-    } on http.ClientException {
-      throw const ConnectionException('Error de conexión con el servidor');
-    } on FormatException {
-      throw const ServerException('Respuesta del servidor inválida');
+      throw ConnectionException(
+        message: 'Tiempo de espera agotado',
+        uri: uri,
+      );
+    } on SocketException catch (e) {
+      throw ConnectionException(
+        message: 'Sin conexión a internet',
+        uri: uri,
+        originalError: e.message,
+      );
+    } on http.ClientException catch (e) {
+      throw ConnectionException(
+        message: 'Error de conexión con el servidor',
+        uri: uri,
+        originalError: e.message,
+      );
+    } on FormatException catch (e) {
+      throw ServerException(
+        message: 'Respuesta del servidor inválida: ${e.message}',
+      );
     }
   }
 
@@ -98,13 +127,26 @@ class ApiClientImpl implements ApiClient {
       final List<dynamic> decodedJson = json.decode(response.body) as List<dynamic>;
       return decodedJson.cast<T>();
     } on TimeoutException {
-      throw const ConnectionException('Tiempo de espera agotado');
-    } on SocketException {
-      throw const ConnectionException('Sin conexión a internet');
-    } on http.ClientException {
-      throw const ConnectionException('Error de conexión con el servidor');
-    } on FormatException {
-      throw const ServerException('Respuesta del servidor inválida');
+      throw ConnectionException(
+        message: 'Tiempo de espera agotado',
+        uri: uri,
+      );
+    } on SocketException catch (e) {
+      throw ConnectionException(
+        message: 'Sin conexión a internet',
+        uri: uri,
+        originalError: e.message,
+      );
+    } on http.ClientException catch (e) {
+      throw ConnectionException(
+        message: 'Error de conexión con el servidor',
+        uri: uri,
+        originalError: e.message,
+      );
+    } on FormatException catch (e) {
+      throw ServerException(
+        message: 'Respuesta del servidor inválida: ${e.message}',
+      );
     }
   }
 }

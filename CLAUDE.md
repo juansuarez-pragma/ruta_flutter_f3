@@ -53,8 +53,15 @@ lib/
     │       └── product_repository_impl.dart
     │
     └── core/                      # Utilidades compartidas
-        ├── exceptions/            # Excepciones internas
+        ├── errors/                # Excepciones internas
+        │   ├── app_exception.dart
+        │   ├── client_exception.dart
+        │   ├── connection_exception.dart
+        │   ├── not_found_exception.dart
+        │   └── server_exception.dart
         ├── network/               # Manejo de HTTP
+        │   ├── http_response_handler.dart
+        │   └── http_status_codes.dart
         └── constants/             # Endpoints
 ```
 
@@ -64,6 +71,62 @@ lib/
 2. **Repository Pattern**: Abstracción entre dominio y datos
 3. **Strategy Pattern**: `HttpResponseHandler` para manejar diferentes códigos HTTP
 4. **Dependency Injection**: Constructor injection en todas las clases
+
+## Manejo de Códigos HTTP
+
+### HttpStatusCodes
+
+Clase utilitaria con constantes para todos los códigos HTTP relevantes:
+
+```dart
+// Constantes disponibles
+HttpStatusCodes.ok           // 200
+HttpStatusCodes.created      // 201
+HttpStatusCodes.badRequest   // 400
+HttpStatusCodes.unauthorized // 401
+HttpStatusCodes.forbidden    // 403
+HttpStatusCodes.notFound     // 404
+HttpStatusCodes.tooManyRequests // 429
+HttpStatusCodes.internalServerError // 500
+// ... y más
+
+// Métodos utilitarios
+HttpStatusCodes.isSuccess(200)      // true
+HttpStatusCodes.isClientError(404)  // true
+HttpStatusCodes.isServerError(500)  // true
+HttpStatusCodes.getDescription(404) // 'Not Found'
+```
+
+### HttpResponseHandler
+
+Implementa el patrón Strategy para mapear códigos HTTP a excepciones:
+
+```dart
+// Flujo de manejo de respuestas:
+// 1. 2xx → Éxito (no lanza excepción)
+// 2. Código específico → Estrategia mapeada
+// 3. 4xx genérico → ClientException
+// 4. 5xx genérico → ServerException
+```
+
+### Excepciones con Información de Diagnóstico
+
+Las excepciones incluyen información útil para debugging:
+
+```dart
+// ConnectionException con URI y error original
+throw ConnectionException(
+  message: 'Sin conexión a internet',
+  uri: uri,
+  originalError: e.message,
+);
+
+// ServerException/ClientException con código HTTP
+throw ServerException(
+  message: 'Error interno del servidor',
+  statusCode: 500,
+);
+```
 
 ## Convenciones de Código
 
@@ -181,6 +244,7 @@ Para agregar nuevas funcionalidades:
 2. **Nuevo endpoint**: Agregar constante en `core/constants/api_endpoints.dart`
 3. **Nuevo método en cliente**: Agregar en `FakeStoreClient` y `ProductRepository`
 4. **Nuevo tipo de error**: Agregar como subclase de `FakeStoreFailure` (mismo archivo)
+5. **Nuevo código HTTP**: Agregar constante en `HttpStatusCodes` y estrategia en `HttpResponseHandler`
 
 ## Dependencias
 
