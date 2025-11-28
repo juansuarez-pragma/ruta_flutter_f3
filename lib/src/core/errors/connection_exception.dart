@@ -47,8 +47,8 @@ class ConnectionException extends AppException {
   ///
   /// Útil cuando no se necesita información de diagnóstico adicional.
   const ConnectionException.withMessage(super.message)
-      : uri = null,
-        originalError = null;
+    : uri = null,
+      originalError = null;
 
   @override
   String toString() {

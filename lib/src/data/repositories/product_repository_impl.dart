@@ -15,7 +15,7 @@ class ProductRepositoryImpl implements ProductRepository {
   ///
   /// [datasource] es el datasource para acceder a la API.
   ProductRepositoryImpl({required FakeStoreDatasource datasource})
-      : _datasource = datasource;
+    : _datasource = datasource;
 
   @override
   Future<Either<FakeStoreFailure, List<Product>>> getAllProducts() async {

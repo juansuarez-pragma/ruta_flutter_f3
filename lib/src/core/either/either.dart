@@ -50,6 +50,9 @@ final class Left<L, R> extends Either<L, R> {
   /// El valor del error.
   final L value;
 
+  /// Crea una instancia de [Left] con el valor de error dado.
+  ///
+  /// [value] es el valor que representa el error o failure.
   const Left(this.value);
 
   @override
@@ -93,6 +96,9 @@ final class Right<L, R> extends Either<L, R> {
   /// El valor exitoso.
   final R value;
 
+  /// Crea una instancia de [Right] con el valor exitoso dado.
+  ///
+  /// [value] es el valor que representa el resultado exitoso.
   const Right(this.value);
 
   @override

@@ -69,15 +69,8 @@ class Product {
   }
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        title,
-        price,
-        description,
-        category,
-        image,
-        rating,
-      );
+  int get hashCode =>
+      Object.hash(id, title, price, description, category, image, rating);
 
   @override
   String toString() => 'Product(id: $id, title: $title, price: $price)';

@@ -6,10 +6,7 @@ import '../../domain/entities/entities.dart';
 /// Se usa en la capa de datos para transformar respuestas de la API.
 class ProductRatingModel extends ProductRating {
   /// Crea una nueva instancia de [ProductRatingModel].
-  const ProductRatingModel({
-    required super.rate,
-    required super.count,
-  });
+  const ProductRatingModel({required super.rate, required super.count});
 
   /// Crea un [ProductRatingModel] desde un mapa JSON.
   ///
@@ -38,19 +35,13 @@ class ProductRatingModel extends ProductRating {
   /// // {'rate': 4.5, 'count': 120}
   /// ```
   Map<String, dynamic> toJson() {
-    return {
-      'rate': rate,
-      'count': count,
-    };
+    return {'rate': rate, 'count': count};
   }
 
   /// Convierte este modelo a una entidad de dominio.
   ///
   /// Útil para el mapeo en la capa de repositorio.
   ProductRating toEntity() {
-    return ProductRating(
-      rate: rate,
-      count: count,
-    );
+    return ProductRating(rate: rate, count: count);
   }
 }

@@ -31,64 +31,66 @@ class HttpResponseHandler {
   static final Map<int, void Function(http.Response)> _strategies = {
     // 400 Bad Request: solicitud mal formada o inválida
     HttpStatusCodes.badRequest: (response) => throw const ClientException(
-          message: 'Solicitud incorrecta',
-          statusCode: HttpStatusCodes.badRequest,
-        ),
+      message: 'Solicitud incorrecta',
+      statusCode: HttpStatusCodes.badRequest,
+    ),
 
     // 401 Unauthorized: requiere autenticación
     HttpStatusCodes.unauthorized: (response) => throw const ClientException(
-          message: 'No autorizado',
-          statusCode: HttpStatusCodes.unauthorized,
-        ),
+      message: 'No autorizado',
+      statusCode: HttpStatusCodes.unauthorized,
+    ),
 
     // 403 Forbidden: autenticado pero sin permisos
     HttpStatusCodes.forbidden: (response) => throw const ClientException(
-          message: 'Acceso prohibido',
-          statusCode: HttpStatusCodes.forbidden,
-        ),
+      message: 'Acceso prohibido',
+      statusCode: HttpStatusCodes.forbidden,
+    ),
 
     // 404 Not Found: recurso no existe
     HttpStatusCodes.notFound: (response) => throw const NotFoundException(),
 
     // 408 Request Timeout: tiempo de espera agotado
-    HttpStatusCodes.requestTimeout: (response) => throw const ConnectionException(
-          message: 'Tiempo de espera agotado',
-        ),
+    HttpStatusCodes.requestTimeout: (response) =>
+        throw const ConnectionException(message: 'Tiempo de espera agotado'),
 
     // 422 Unprocessable Entity: datos inválidos
-    HttpStatusCodes.unprocessableEntity: (response) => throw const ClientException(
+    HttpStatusCodes.unprocessableEntity: (response) =>
+        throw const ClientException(
           message: 'Datos de solicitud inválidos',
           statusCode: HttpStatusCodes.unprocessableEntity,
         ),
 
     // 429 Too Many Requests: rate limiting
     HttpStatusCodes.tooManyRequests: (response) => throw const ClientException(
-          message: 'Demasiadas solicitudes',
-          statusCode: HttpStatusCodes.tooManyRequests,
-        ),
+      message: 'Demasiadas solicitudes',
+      statusCode: HttpStatusCodes.tooManyRequests,
+    ),
 
     // 500 Internal Server Error: error genérico del servidor
-    HttpStatusCodes.internalServerError: (response) => throw const ServerException(
+    HttpStatusCodes.internalServerError: (response) =>
+        throw const ServerException(
           statusCode: HttpStatusCodes.internalServerError,
         ),
 
     // 502 Bad Gateway: puerta de enlace incorrecta
     HttpStatusCodes.badGateway: (response) => throw const ServerException(
-          message: 'Puerta de enlace incorrecta',
-          statusCode: HttpStatusCodes.badGateway,
-        ),
+      message: 'Puerta de enlace incorrecta',
+      statusCode: HttpStatusCodes.badGateway,
+    ),
 
     // 503 Service Unavailable: servicio no disponible
-    HttpStatusCodes.serviceUnavailable: (response) => throw const ServerException(
+    HttpStatusCodes.serviceUnavailable: (response) =>
+        throw const ServerException(
           message: 'Servicio no disponible',
           statusCode: HttpStatusCodes.serviceUnavailable,
         ),
 
     // 504 Gateway Timeout: tiempo de espera de gateway
     HttpStatusCodes.gatewayTimeout: (response) => throw const ServerException(
-          message: 'Tiempo de espera de la puerta de enlace',
-          statusCode: HttpStatusCodes.gatewayTimeout,
-        ),
+      message: 'Tiempo de espera de la puerta de enlace',
+      statusCode: HttpStatusCodes.gatewayTimeout,
+    ),
   };
 
   /// Procesa una respuesta HTTP y lanza excepciones según el código de estado.
@@ -122,7 +124,8 @@ class HttpResponseHandler {
     // 5xx - Errores del servidor
     if (HttpStatusCodes.isServerError(statusCode)) {
       throw ServerException(
-        message: 'Error del servidor: ${HttpStatusCodes.getDescription(statusCode)}',
+        message:
+            'Error del servidor: ${HttpStatusCodes.getDescription(statusCode)}',
         statusCode: statusCode,
       );
     }
@@ -130,7 +133,8 @@ class HttpResponseHandler {
     // 4xx - Errores del cliente
     if (HttpStatusCodes.isClientError(statusCode)) {
       throw ClientException(
-        message: 'Error del cliente: ${HttpStatusCodes.getDescription(statusCode)}',
+        message:
+            'Error del cliente: ${HttpStatusCodes.getDescription(statusCode)}',
         statusCode: statusCode,
       );
     }

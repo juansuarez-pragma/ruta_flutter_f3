@@ -61,14 +61,12 @@ class FakeStoreClient {
   ///
   /// [httpClient] permite inyectar un cliente HTTP personalizado,
   /// útil para testing.
-  FakeStoreClient({
-    FakeStoreConfig? config,
-    http.Client? httpClient,
-  })  : _httpClient = httpClient ?? http.Client(),
-        _repository = _createRepository(
-          config ?? const FakeStoreConfig(),
-          httpClient ?? http.Client(),
-        );
+  FakeStoreClient({FakeStoreConfig? config, http.Client? httpClient})
+    : _httpClient = httpClient ?? http.Client(),
+      _repository = _createRepository(
+        config ?? const FakeStoreConfig(),
+        httpClient ?? http.Client(),
+      );
 
   /// Crea el repositorio interno con todas sus dependencias.
   static ProductRepository _createRepository(

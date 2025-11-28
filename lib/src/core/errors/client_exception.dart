@@ -27,14 +27,11 @@ class ClientException extends AppException {
   ///
   /// [message] es el mensaje descriptivo del error.
   /// [statusCode] es el código HTTP del error (opcional).
-  const ClientException({
-    String message = defaultMessage,
-    this.statusCode,
-  }) : super(message);
+  const ClientException({String message = defaultMessage, this.statusCode})
+    : super(message);
 
   /// Constructor simplificado que solo recibe el mensaje.
-  const ClientException.withMessage(super.message)
-      : statusCode = null;
+  const ClientException.withMessage(super.message) : statusCode = null;
 
   @override
   String toString() {

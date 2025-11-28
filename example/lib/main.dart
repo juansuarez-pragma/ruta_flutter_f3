@@ -219,7 +219,8 @@ class _ProductCard extends StatelessWidget {
                 child: Image.network(
                   product.image,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.image, size: 48),
+                  errorBuilder: (_, __, ___) =>
+                      const Icon(Icons.image, size: 48),
                 ),
               ),
             ),
@@ -239,9 +240,9 @@ class _ProductCard extends StatelessWidget {
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -298,7 +299,8 @@ class ProductDetailPage extends StatelessWidget {
                     children: [
                       Text(
                         '\$${product.price.toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold,
                             ),

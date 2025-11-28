@@ -105,6 +105,36 @@ El ejemplo ahora sigue las buenas prácticas de paquetes Flutter publicados:
 
 ---
 
+## [1.2.0] - 2025-11-27
+
+### Agregado
+
+- **`HttpStatusCodes`**: Nueva clase con constantes documentadas para códigos HTTP
+  - Métodos utilitarios: `isSuccess()`, `isClientError()`, `isServerError()`
+  - Método `getDescription()` para obtener descripción legible del código
+- **Información de diagnóstico en excepciones**:
+  - `ConnectionException`: Campos `uri` y `originalError` para debugging
+  - `ServerException` y `ClientException`: Campo `statusCode` para diagnóstico
+
+### Cambiado
+
+- **`HttpResponseHandler`**: Refactorizado para usar `HttpStatusCodes` en lugar de números mágicos
+- **`ApiClientImpl`**: Ahora incluye información de diagnóstico en excepciones
+
+### Documentación
+
+- Agregada documentación a constructores de `Left` y `Right`
+- Creado `LIBRARY_BEST_PRACTICES_CHECKPOINT.md` con guía de mejores prácticas
+- Creado `AUDIT_REPORT.md` con auditoría completa del paquete
+- Actualizado `CLAUDE.md` con documentación de nuevas clases
+
+### Corregido
+
+- Archivo `LICENSE` ahora contiene licencia MIT válida (antes era placeholder)
+- Formato de código aplicado con `dart format`
+
+---
+
 ## [Unreleased]
 
 ### Planeado
@@ -115,3 +145,4 @@ El ejemplo ahora sigue las buenas prácticas de paquetes Flutter publicados:
 - Cache local con Hive o SharedPreferences
 - Interceptores HTTP personalizables
 - Soporte para cancelación de requests
+- Soporte para plataforma Web (import condicional de dart:io)

@@ -25,10 +25,7 @@ class ProductRating {
   ///
   /// [rate] es la puntuación promedio del producto.
   /// [count] es el número total de calificaciones.
-  const ProductRating({
-    required this.rate,
-    required this.count,
-  });
+  const ProductRating({required this.rate, required this.count});
 
   @override
   bool operator ==(Object other) {

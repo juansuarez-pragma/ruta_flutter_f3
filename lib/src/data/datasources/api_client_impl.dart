@@ -32,16 +32,16 @@ class ApiClientImpl implements ApiClient {
     required String baseUrl,
     required Duration timeout,
     required HttpResponseHandler responseHandler,
-  })  : _client = client,
-        _baseUrl = baseUrl,
-        _timeout = timeout,
-        _responseHandler = responseHandler;
+  }) : _client = client,
+       _baseUrl = baseUrl,
+       _timeout = timeout,
+       _responseHandler = responseHandler;
 
   /// Headers comunes para todas las peticiones.
   Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
 
   @override
   Future<T> get<T>({
@@ -51,15 +51,14 @@ class ApiClientImpl implements ApiClient {
     final uri = Uri.parse('$_baseUrl$endpoint');
 
     try {
-      final response = await _client.get(uri, headers: _headers).timeout(_timeout);
+      final response = await _client
+          .get(uri, headers: _headers)
+          .timeout(_timeout);
       _responseHandler.handleResponse(response);
       final decodedJson = json.decode(response.body);
       return fromJson(decodedJson);
     } on TimeoutException {
-      throw ConnectionException(
-        message: 'Tiempo de espera agotado',
-        uri: uri,
-      );
+      throw ConnectionException(message: 'Tiempo de espera agotado', uri: uri);
     } on SocketException catch (e) {
       throw ConnectionException(
         message: 'Sin conexión a internet',
@@ -87,17 +86,17 @@ class ApiClientImpl implements ApiClient {
     final uri = Uri.parse('$_baseUrl$endpoint');
 
     try {
-      final response = await _client.get(uri, headers: _headers).timeout(_timeout);
+      final response = await _client
+          .get(uri, headers: _headers)
+          .timeout(_timeout);
       _responseHandler.handleResponse(response);
-      final List<dynamic> decodedJson = json.decode(response.body) as List<dynamic>;
+      final List<dynamic> decodedJson =
+          json.decode(response.body) as List<dynamic>;
       return decodedJson
           .map((item) => fromJsonList(item as Map<String, dynamic>))
           .toList();
     } on TimeoutException {
-      throw ConnectionException(
-        message: 'Tiempo de espera agotado',
-        uri: uri,
-      );
+      throw ConnectionException(message: 'Tiempo de espera agotado', uri: uri);
     } on SocketException catch (e) {
       throw ConnectionException(
         message: 'Sin conexión a internet',
@@ -122,15 +121,15 @@ class ApiClientImpl implements ApiClient {
     final uri = Uri.parse('$_baseUrl$endpoint');
 
     try {
-      final response = await _client.get(uri, headers: _headers).timeout(_timeout);
+      final response = await _client
+          .get(uri, headers: _headers)
+          .timeout(_timeout);
       _responseHandler.handleResponse(response);
-      final List<dynamic> decodedJson = json.decode(response.body) as List<dynamic>;
+      final List<dynamic> decodedJson =
+          json.decode(response.body) as List<dynamic>;
       return decodedJson.cast<T>();
     } on TimeoutException {
-      throw ConnectionException(
-        message: 'Tiempo de espera agotado',
-        uri: uri,
-      );
+      throw ConnectionException(message: 'Tiempo de espera agotado', uri: uri);
     } on SocketException catch (e) {
       throw ConnectionException(
         message: 'Sin conexión a internet',

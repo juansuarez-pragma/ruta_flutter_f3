@@ -65,10 +65,7 @@ class ProductModel extends Product {
       'description': description,
       'category': category,
       'image': image,
-      'rating': {
-        'rate': rating.rate,
-        'count': rating.count,
-      },
+      'rating': {'rate': rating.rate, 'count': rating.count},
     };
   }
 
@@ -83,10 +80,7 @@ class ProductModel extends Product {
       description: description,
       category: category,
       image: image,
-      rating: ProductRating(
-        rate: rating.rate,
-        count: rating.count,
-      ),
+      rating: ProductRating(rate: rating.rate, count: rating.count),
     );
   }
 }

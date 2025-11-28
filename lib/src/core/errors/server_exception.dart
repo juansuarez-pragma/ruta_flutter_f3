@@ -27,14 +27,11 @@ class ServerException extends AppException {
   ///
   /// [message] es el mensaje descriptivo del error.
   /// [statusCode] es el código HTTP del error (opcional).
-  const ServerException({
-    String message = defaultMessage,
-    this.statusCode,
-  }) : super(message);
+  const ServerException({String message = defaultMessage, this.statusCode})
+    : super(message);
 
   /// Constructor simplificado que solo recibe el mensaje.
-  const ServerException.withMessage(super.message)
-      : statusCode = null;
+  const ServerException.withMessage(super.message) : statusCode = null;
 
   @override
   String toString() {
