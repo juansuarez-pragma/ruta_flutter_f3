@@ -1,5 +1,8 @@
 # Fake Store API Client
 
+[![Pub Points](https://img.shields.io/badge/pub%20points-160%2F160-brightgreen)](https://pub.dev/packages/fake_store_api_client)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture y manejo funcional de errores.
 
 ## Características
@@ -10,8 +13,9 @@ Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Ar
 - Obtener productos por categoría
 - Manejo funcional de errores con `Either<Failure, Success>`
 - Clean Architecture con separación de capas
-- Modelos inmutables con Equatable
-- Sin generación de código (parseo manual de JSON)
+- Sealed classes para pattern matching exhaustivo
+- Sin dependencias externas innecesarias (solo `http`)
+- Soporte multiplataforma: iOS, Android, Windows, macOS, Linux
 
 ## Instalación
 
@@ -223,8 +227,8 @@ lib/
 ## Dependencias
 
 - `http`: Cliente HTTP
-- `dartz`: Tipo Either para manejo funcional de errores
-- `equatable`: Comparación de objetos por valor
+
+> **Nota:** Este paquete usa implementaciones propias de `Either` y comparación por valor, sin depender de paquetes externos como `dartz` o `equatable`.
 
 ## Troubleshooting
 
@@ -245,6 +249,14 @@ adb -s emulator-5554 shell ping -c 2 fakestoreapi.com
 ```
 
 Ver [CLAUDE.md](CLAUDE.md) para más detalles de troubleshooting.
+
+## Documentación para Desarrolladores
+
+Para contribuidores y agentes de IA, ver [CLAUDE.md](CLAUDE.md) que contiene:
+- Arquitectura detallada del paquete
+- Patrones de diseño utilizados
+- Guía de mejores prácticas
+- Instrucciones para extender el paquete
 
 ## Licencia
 
