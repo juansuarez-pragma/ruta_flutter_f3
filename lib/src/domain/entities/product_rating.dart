@@ -1,11 +1,8 @@
-import 'package:equatable/equatable.dart';
-
 /// Representa la calificación de un producto.
 ///
 /// Contiene la puntuación promedio y el número total de calificaciones.
 ///
-/// Esta clase es inmutable y proporciona comparación por valor
-/// mediante [Equatable].
+/// Esta clase es inmutable y proporciona comparación por valor.
 ///
 /// ## Ejemplo
 ///
@@ -17,7 +14,7 @@ import 'package:equatable/equatable.dart';
 ///
 /// print('Puntuación: ${rating.rate}/5 (${rating.count} reseñas)');
 /// ```
-class ProductRating extends Equatable {
+class ProductRating {
   /// Puntuación promedio del producto (0.0 - 5.0).
   final double rate;
 
@@ -34,7 +31,13 @@ class ProductRating extends Equatable {
   });
 
   @override
-  List<Object> get props => [rate, count];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ProductRating && other.rate == rate && other.count == count;
+  }
+
+  @override
+  int get hashCode => Object.hash(rate, count);
 
   @override
   String toString() => 'ProductRating(rate: $rate, count: $count)';

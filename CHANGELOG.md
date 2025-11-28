@@ -62,6 +62,31 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [1.1.0] - 2025-11-27
+
+### Cambiado
+
+- **Eliminada dependencia `dartz`**: Implementación propia del tipo `Either<L, R>` en `lib/src/core/either/either.dart`
+- **Eliminada dependencia `equatable`**: Implementación manual de `==` y `hashCode` en entidades y failures
+- **Dependencias reducidas**: De 3 dependencias (http, dartz, equatable) a solo 1 (http)
+
+### Agregado
+
+- **`Either<L, R>`**: Tipo propio con soporte completo para manejo funcional de errores:
+  - `fold()` para pattern matching
+  - `map()` y `mapLeft()` para transformaciones
+  - `isLeft`, `isRight`, `leftOrNull`, `rightOrNull` para inspección
+  - Clases `Left<L, R>` y `Right<L, R>` con igualdad por valor
+
+### Motivo
+
+Al ser un paquete publicable, minimizar dependencias externas:
+- Reduce el tamaño del paquete
+- Evita conflictos de versiones con otros paquetes
+- Mayor control sobre la implementación
+
+---
+
 ## [1.0.1] - 2025-11-27
 
 ### Cambiado

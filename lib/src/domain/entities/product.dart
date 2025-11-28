@@ -1,11 +1,8 @@
-import 'package:equatable/equatable.dart';
-
 import 'product_rating.dart';
 
 /// Representa un producto de la tienda.
 ///
-/// Esta clase es inmutable y proporciona comparación por valor
-/// mediante [Equatable].
+/// Esta clase es inmutable y proporciona comparación por valor.
 ///
 /// ## Ejemplo
 ///
@@ -22,7 +19,7 @@ import 'product_rating.dart';
 ///
 /// print('${product.title} - \$${product.price}');
 /// ```
-class Product extends Equatable {
+class Product {
   /// Identificador único del producto.
   final int id;
 
@@ -59,7 +56,20 @@ class Product extends Equatable {
   });
 
   @override
-  List<Object> get props => [
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Product &&
+        other.id == id &&
+        other.title == title &&
+        other.price == price &&
+        other.description == description &&
+        other.category == category &&
+        other.image == image &&
+        other.rating == rating;
+  }
+
+  @override
+  int get hashCode => Object.hash(
         id,
         title,
         price,
@@ -67,7 +77,7 @@ class Product extends Equatable {
         category,
         image,
         rating,
-      ];
+      );
 
   @override
   String toString() => 'Product(id: $id, title: $title, price: $price)';

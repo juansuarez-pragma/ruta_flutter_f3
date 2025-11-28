@@ -82,9 +82,15 @@ result.fold(
 ### Sealed Classes para Failures
 ```dart
 // Los failures usan sealed class para pattern matching exhaustivo
-sealed class FakeStoreFailure extends Equatable {
+sealed class FakeStoreFailure {
   final String message;
   const FakeStoreFailure(this.message);
+
+  // Igualdad manual (sin Equatable)
+  @override
+  bool operator ==(Object other) => ...;
+  @override
+  int get hashCode => message.hashCode;
 }
 
 final class ConnectionFailure extends FakeStoreFailure { ... }
@@ -106,8 +112,8 @@ Solo se exporta lo necesario para el consumidor:
 
 ```dart
 // Desde fake_store_api_client.dart
-export 'package:dartz/dartz.dart' show Either, Left, Right;
-export 'src/client/client.dart';           // FakeStoreClient, FakeStoreConfig
+export 'src/core/either/either.dart';       // Either, Left, Right (implementación propia)
+export 'src/client/client.dart';            // FakeStoreClient, FakeStoreConfig
 export 'src/domain/entities/entities.dart'; // Product, ProductRating
 export 'src/domain/failures/failures.dart'; // Todos los Failures
 ```
@@ -160,10 +166,12 @@ flutter test --coverage
 
 1. **No usar code generation**: El parseo JSON es manual (sin json_serializable)
 2. **Inmutabilidad**: Todas las entidades son inmutables con `final` fields
-3. **Equatable**: Se usa para comparación por valor en entidades y failures
-4. **Dispose**: Siempre llamar `client.dispose()` al terminar
-5. **Sealed classes**: Los subtipos de `FakeStoreFailure` deben estar en el mismo archivo
-6. **Ejemplo simple**: El ejemplo usa solo widgets Material para máxima simplicidad
+3. **Igualdad manual**: Se implementa `==` y `hashCode` manualmente (sin Equatable)
+4. **Either propio**: Implementación propia del tipo Either (sin dartz)
+5. **Dispose**: Siempre llamar `client.dispose()` al terminar
+6. **Sealed classes**: Los subtipos de `FakeStoreFailure` deben estar en el mismo archivo
+7. **Ejemplo simple**: El ejemplo usa solo widgets Material para máxima simplicidad
+8. **Mínimas dependencias**: Solo `http` como dependencia externa
 
 ## Extensión del Paquete
 
@@ -181,8 +189,6 @@ Para agregar nuevas funcionalidades:
 | Paquete | Propósito |
 |---------|-----------|
 | `http` | Cliente HTTP |
-| `dartz` | Tipo Either para manejo funcional |
-| `equatable` | Comparación por valor |
 
 ### Ejemplo (example/)
 
@@ -265,4 +271,3 @@ Y el archivo `res/xml/network_security_config.xml`:
 
 - [Fake Store API Docs](https://fakestoreapi.com/docs)
 - [Clean Architecture en Flutter](https://resocoder.com/flutter-clean-architecture-tdd/)
-- [Either y Functional Error Handling](https://pub.dev/packages/dartz)

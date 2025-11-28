@@ -1,5 +1,4 @@
-import 'package:dartz/dartz.dart';
-
+import '../../core/either/either.dart';
 import '../../core/errors/errors.dart';
 import '../../domain/domain.dart';
 import '../datasources/datasources.dart';

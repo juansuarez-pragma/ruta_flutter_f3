@@ -41,9 +41,8 @@
 ///
 /// ## Manejo de errores
 ///
-/// Todos los métodos retornan `Either<FakeStoreFailure, T>` del paquete
-/// [dartz](https://pub.dev/packages/dartz). Esto permite un manejo
-/// funcional de errores:
+/// Todos los métodos retornan `Either<FakeStoreFailure, T>`.
+/// Esto permite un manejo funcional de errores:
 ///
 /// ```dart
 /// final result = await client.getProductById(1);
@@ -71,8 +70,8 @@
 /// - [InvalidRequestFailure]: Solicitud inválida (4xx)
 library;
 
-// Re-exportar dartz para que los usuarios tengan acceso a Either
-export 'package:dartz/dartz.dart' show Either, Left, Right;
+// API Pública - Either (tipo propio)
+export 'src/core/either/either.dart';
 
 // API Pública - Cliente
 export 'src/client/client.dart';

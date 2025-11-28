@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-
 /// Clase base sellada para errores del cliente Fake Store.
 ///
 /// Proporciona un mensaje descriptivo del error ocurrido.
@@ -24,7 +22,7 @@ import 'package:equatable/equatable.dart';
 ///   }
 /// }
 /// ```
-sealed class FakeStoreFailure extends Equatable {
+sealed class FakeStoreFailure {
   /// Mensaje descriptivo del error.
   final String message;
 
@@ -32,7 +30,18 @@ sealed class FakeStoreFailure extends Equatable {
   const FakeStoreFailure(this.message);
 
   @override
-  List<Object> get props => [message];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is FakeStoreFailure &&
+        other.runtimeType == runtimeType &&
+        other.message == message;
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @override
+  String toString() => '$runtimeType(message: $message)';
 }
 
 /// Error de conexión de red.

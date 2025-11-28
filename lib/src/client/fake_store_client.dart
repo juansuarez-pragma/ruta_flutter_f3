@@ -1,5 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+
+import '../core/either/either.dart';
 
 import '../core/network/network.dart';
 import '../data/data.dart';
