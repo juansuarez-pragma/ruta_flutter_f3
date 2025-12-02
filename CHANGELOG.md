@@ -170,6 +170,35 @@ El ejemplo ahora sigue las buenas prácticas de paquetes Flutter publicados:
 
 ---
 
+## [1.3.1] - 2025-12-02
+
+### Agregado
+
+- **`AppStrings`**: Nueva clase para centralizar textos de UI
+  - Constantes para mensajes comunes (loading, errors, success)
+  - Métodos estáticos para mensajes parametrizados
+  - Exportado en API pública para uso en consumidores
+
+### Eliminado
+
+- **`ApplicationController.run()`**: Método eliminado (era para apps de consola, no para librerías)
+- **`UserInput.showMainMenu()`**: Método eliminado (solo usado por `run()`)
+- **`MenuOption.invalid`**: Valor eliminado (solo usado por `run()`)
+- **`FlutterUserInterface.onShowMainMenu`**: Callback eliminado (no utilizado)
+
+### Cambiado
+
+- Tests reducidos de 141 a 129 (eliminados tests de código no utilizado)
+- `ApplicationController` ahora solo expone `executeOption()` para uso en librerías
+
+### Motivo
+
+Limpieza de código no utilizado que solo existía para aplicaciones de consola.
+La librería está diseñada para ser consumida por aplicaciones Flutter, no para
+ejecutarse como aplicación standalone.
+
+---
+
 ## [Unreleased]
 
 ### Planeado

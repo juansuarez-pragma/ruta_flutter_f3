@@ -1,15 +1,8 @@
-import 'package:fake_store_api_client/src/presentation/contracts/menu_option.dart';
-
 /// Contrato para entrada de datos del usuario.
 ///
 /// Define los métodos necesarios para obtener input del usuario,
 /// independientemente de la plataforma (consola, GUI, web, etc.).
 abstract class UserInput {
-  /// Muestra el menú principal y retorna la opción seleccionada.
-  ///
-  /// Retorna un [MenuOption] que representa la acción elegida.
-  Future<MenuOption> showMainMenu();
-
   /// Solicita al usuario que ingrese un ID de producto.
   ///
   /// Retorna el ID como [int], o `null` si el usuario cancela

@@ -256,89 +256,6 @@ void main() {
           expect(onExitCalled, isTrue);
         });
       });
-
-      group('invalid', () {
-        test('muestra mensaje de error para opción inválida', () async {
-          // Act
-          await controller.executeOption(MenuOption.invalid);
-
-          // Assert
-          verify(
-            () => mockUI.showError(AppStrings.invalidOptionErrorShort),
-          ).called(1);
-        });
-      });
-    });
-
-    group('run', () {
-      test('muestra bienvenida, ejecuta menú y muestra despedida', () async {
-        // Arrange
-        when(
-          () => mockUI.showMainMenu(),
-        ).thenAnswer((_) async => MenuOption.exit);
-
-        // Act
-        await controller.run();
-
-        // Assert
-        verify(() => mockUI.showWelcome(AppStrings.welcomeMessage)).called(1);
-        verify(() => mockUI.showMainMenu()).called(1);
-        verify(() => mockUI.showGoodbye()).called(1);
-        expect(onExitCalled, isTrue);
-      });
-
-      test('ejecuta múltiples opciones hasta seleccionar exit', () async {
-        // Arrange
-        var callCount = 0;
-        final products = <Product>[createTestProduct()];
-        final categories = ['electronics'];
-
-        when(() => mockUI.showMainMenu()).thenAnswer((_) async {
-          callCount++;
-          switch (callCount) {
-            case 1:
-              return MenuOption.getAllProducts;
-            case 2:
-              return MenuOption.getAllCategories;
-            default:
-              return MenuOption.exit;
-          }
-        });
-
-        when(
-          () => mockRepository.getAllProducts(),
-        ).thenAnswer((_) async => Right(products));
-        when(
-          () => mockRepository.getAllCategories(),
-        ).thenAnswer((_) async => Right(categories));
-
-        // Act
-        await controller.run();
-
-        // Assert
-        verify(() => mockUI.showMainMenu()).called(3);
-        verify(() => mockUI.showProducts(products)).called(1);
-        verify(() => mockUI.showCategories(categories)).called(1);
-        verify(() => mockUI.showGoodbye()).called(1);
-      });
-
-      test('maneja opción inválida y continúa el bucle', () async {
-        // Arrange
-        var callCount = 0;
-        when(() => mockUI.showMainMenu()).thenAnswer((_) async {
-          callCount++;
-          if (callCount == 1) return MenuOption.invalid;
-          return MenuOption.exit;
-        });
-
-        // Act
-        await controller.run();
-
-        // Assert
-        verify(() => mockUI.showError(AppStrings.invalidOptionError)).called(1);
-        verify(() => mockUI.showMainMenu()).called(2);
-        verify(() => mockUI.showGoodbye()).called(1);
-      });
     });
 
     group('constructor', () {
@@ -349,13 +266,11 @@ void main() {
           repository: mockRepository,
         );
 
-        when(
-          () => mockUI.showMainMenu(),
-        ).thenAnswer((_) async => MenuOption.exit);
+        // Act
+        await controllerWithoutCallback.executeOption(MenuOption.exit);
 
-        // Act & Assert - no debería lanzar error
-        await controllerWithoutCallback.run();
-        verify(() => mockUI.showGoodbye()).called(1);
+        // Assert - no debería lanzar error
+        expect(onExitCalled, isFalse); // El callback no está configurado
       });
     });
   });

@@ -9,7 +9,7 @@ import 'package:fake_store_api_client/fake_store_api_client.dart';
 /// ## Patrón Ports & Adapters
 ///
 /// Este adapter permite que la misma lógica de negocio (ApplicationController)
-/// funcione tanto en consola como en Flutter, demostrando la separación
+/// funcione con diferentes interfaces de usuario, demostrando la separación
 /// de responsabilidades.
 ///
 /// ## Ejemplo de uso
@@ -53,10 +53,6 @@ class FlutterUserInterface implements UserInterface {
   /// Callback para mostrar las categorías.
   final void Function(List<String> categories)? onShowCategories;
 
-  /// Callback para solicitar el menú principal.
-  /// Retorna un Future con la opción seleccionada.
-  final Future<MenuOption> Function()? onShowMainMenu;
-
   /// Callback para solicitar un ID de producto.
   /// Retorna un Future con el ID o null si es inválido.
   final Future<int?> Function()? onPromptProductId;
@@ -78,7 +74,6 @@ class FlutterUserInterface implements UserInterface {
     this.onShowProducts,
     this.onShowProduct,
     this.onShowCategories,
-    this.onShowMainMenu,
     this.onPromptProductId,
     this.onPromptCategory,
   });
@@ -138,14 +133,6 @@ class FlutterUserInterface implements UserInterface {
   // ─────────────────────────────────────────────────────────────────────────
   // UserInput
   // ─────────────────────────────────────────────────────────────────────────
-
-  @override
-  Future<MenuOption> showMainMenu() async {
-    if (onShowMainMenu != null) {
-      return onShowMainMenu!();
-    }
-    return MenuOption.exit;
-  }
 
   @override
   Future<int?> promptProductId() async {

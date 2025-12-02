@@ -19,7 +19,7 @@ import 'package:fake_store_api_client/src/presentation/contracts/contracts.dart'
 ///   repository: ProductRepositoryImpl(datasource: datasource),
 /// );
 ///
-/// await controller.run();
+/// await controller.executeOption(MenuOption.getAllProducts);
 /// ```
 class ApplicationController {
   final UserInterface _ui;
@@ -39,40 +39,18 @@ class ApplicationController {
        _repository = repository,
        _onExit = onExit;
 
-  /// Inicia el bucle principal de la aplicación.
+  /// Ejecuta una operación específica.
   ///
-  /// Muestra el menú y procesa las opciones hasta que el usuario
-  /// seleccione salir.
-  Future<void> run() async {
-    _ui.showWelcome(AppStrings.welcomeMessage);
-
-    MenuOption option;
-    do {
-      option = await _ui.showMainMenu();
-
-      switch (option) {
-        case MenuOption.getAllProducts:
-          await _handleGetAllProducts();
-        case MenuOption.getProductById:
-          await _handleGetProductById();
-        case MenuOption.getAllCategories:
-          await _handleGetAllCategories();
-        case MenuOption.getProductsByCategory:
-          await _handleGetProductsByCategory();
-        case MenuOption.exit:
-          break;
-        case MenuOption.invalid:
-          _ui.showError(AppStrings.invalidOptionError);
-      }
-    } while (option != MenuOption.exit);
-
-    _ui.showGoodbye();
-    _onExit?.call();
-  }
-
-  /// Ejecuta una sola operación sin bucle.
+  /// Este método permite ejecutar operaciones individuales sin necesidad
+  /// de un bucle de menú, ideal para interfaces gráficas como Flutter.
   ///
-  /// Útil para interfaces que no usan un menú tradicional (ej: Flutter).
+  /// ```dart
+  /// // Obtener todos los productos
+  /// await controller.executeOption(MenuOption.getAllProducts);
+  ///
+  /// // Obtener producto por ID (requiere implementar promptProductId)
+  /// await controller.executeOption(MenuOption.getProductById);
+  /// ```
   Future<void> executeOption(MenuOption option) async {
     switch (option) {
       case MenuOption.getAllProducts:
@@ -85,8 +63,6 @@ class ApplicationController {
         await _handleGetProductsByCategory();
       case MenuOption.exit:
         _onExit?.call();
-      case MenuOption.invalid:
-        _ui.showError(AppStrings.invalidOptionErrorShort);
     }
   }
 

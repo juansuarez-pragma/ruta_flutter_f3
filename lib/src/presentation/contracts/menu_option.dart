@@ -1,7 +1,7 @@
-/// Enumeración que representa las opciones del menú principal.
+/// Enumeración que representa las opciones disponibles.
 ///
 /// Define las acciones disponibles para el usuario en la aplicación.
-/// Incluye operaciones CRUD de productos y categorías.
+/// Incluye operaciones de productos y categorías.
 enum MenuOption {
   /// Obtener todos los productos.
   getAllProducts,
@@ -17,7 +17,4 @@ enum MenuOption {
 
   /// Salir de la aplicación.
   exit,
-
-  /// Opción inválida (usado para errores de entrada).
-  invalid,
 }

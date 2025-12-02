@@ -6,6 +6,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 
 **fake_store_api_client** - Paquete Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture y manejo funcional de errores usando `Either<Failure, Success>`.
 
+- Versión: 1.3.1
 - SDK: Dart ^3.9.2, Flutter >=3.0.0
 - Dependencias: Solo `http`
 - Plataformas: iOS, Android, Windows, macOS, Linux (sin soporte Web aún)
@@ -89,6 +90,23 @@ final controller = ApplicationController(
 );
 
 await controller.executeOption(MenuOption.getAllProducts);
+```
+
+## AppStrings - Textos Centralizados
+
+Los textos de UI están centralizados en `AppStrings` para facilitar mantenimiento e i18n:
+
+```dart
+import 'package:fake_store_api_client/fake_store_api_client.dart';
+
+// Constantes
+AppStrings.loadingProducts      // 'Obteniendo productos...'
+AppStrings.invalidIdError       // 'ID inválido.'
+AppStrings.serverFailureMessage // 'Error en el servidor.'
+
+// Métodos parametrizados
+AppStrings.loadingProductById(5)           // 'Obteniendo producto #5...'
+AppStrings.loadingProductsByCategory('x')  // 'Obteniendo productos de x...'
 ```
 
 ## Flujo de Manejo de Errores
