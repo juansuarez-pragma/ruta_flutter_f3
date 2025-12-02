@@ -1,12 +1,8 @@
+import 'package:fake_store_api_client/src/core/constants/app_strings.dart';
 import 'package:fake_store_api_client/src/domain/repositories/product_repository.dart';
 import 'package:fake_store_api_client/src/presentation/contracts/contracts.dart';
 
 /// Controlador principal que coordina la interacción entre la UI y el repositorio.
-///
-/// Esta clase actúa como el punto de entrada de la aplicación, orquestando
-/// el flujo sin conocer los detalles de implementación de la UI.
-///
-/// ## Patrón Ports & Adapters
 ///
 /// El controlador depende de abstracciones ([UserInterface], [ProductRepository]),
 /// no de implementaciones concretas. Esto permite:
@@ -48,7 +44,7 @@ class ApplicationController {
   /// Muestra el menú y procesa las opciones hasta que el usuario
   /// seleccione salir.
   Future<void> run() async {
-    _ui.showWelcome('Bienvenido a Fake Store');
+    _ui.showWelcome(AppStrings.welcomeMessage);
 
     MenuOption option;
     do {
@@ -66,7 +62,7 @@ class ApplicationController {
         case MenuOption.exit:
           break;
         case MenuOption.invalid:
-          _ui.showError('Opción inválida. Intenta de nuevo.');
+          _ui.showError(AppStrings.invalidOptionError);
       }
     } while (option != MenuOption.exit);
 
@@ -90,12 +86,12 @@ class ApplicationController {
       case MenuOption.exit:
         _onExit?.call();
       case MenuOption.invalid:
-        _ui.showError('Opción inválida.');
+        _ui.showError(AppStrings.invalidOptionErrorShort);
     }
   }
 
   Future<void> _handleGetAllProducts() async {
-    _ui.showLoading('Obteniendo productos...');
+    _ui.showLoading(AppStrings.loadingProducts);
 
     final result = await _repository.getAllProducts();
 
@@ -109,11 +105,11 @@ class ApplicationController {
     final id = await _ui.promptProductId();
 
     if (id == null) {
-      _ui.showError('ID inválido.');
+      _ui.showError(AppStrings.invalidIdError);
       return;
     }
 
-    _ui.showLoading('Obteniendo producto #$id...');
+    _ui.showLoading(AppStrings.loadingProductById(id));
 
     final result = await _repository.getProductById(id);
 
@@ -124,7 +120,7 @@ class ApplicationController {
   }
 
   Future<void> _handleGetAllCategories() async {
-    _ui.showLoading('Obteniendo categorías...');
+    _ui.showLoading(AppStrings.loadingCategories);
 
     final result = await _repository.getAllCategories();
 
@@ -148,11 +144,11 @@ class ApplicationController {
     final selectedCategory = await _ui.promptCategory(categories);
 
     if (selectedCategory == null) {
-      _ui.showError('Categoría inválida.');
+      _ui.showError(AppStrings.invalidCategoryError);
       return;
     }
 
-    _ui.showLoading('Obteniendo productos de "$selectedCategory"...');
+    _ui.showLoading(AppStrings.loadingProductsByCategory(selectedCategory));
 
     final result = await _repository.getProductsByCategory(selectedCategory);
 

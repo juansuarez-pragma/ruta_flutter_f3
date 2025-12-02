@@ -96,3 +96,6 @@ export 'src/data/repositories/repositories.dart';
 
 // API Pública - Network (para inyección de dependencias avanzada)
 export 'src/core/network/network.dart';
+
+// API Pública - Constantes y strings
+export 'src/core/constants/app_strings.dart';

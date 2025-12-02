@@ -47,7 +47,9 @@ void main() {
           await controller.executeOption(MenuOption.getAllProducts);
 
           // Assert
-          verify(() => mockUI.showLoading('Obteniendo productos...')).called(1);
+          verify(
+            () => mockUI.showLoading(AppStrings.loadingProducts),
+          ).called(1);
           verify(() => mockRepository.getAllProducts()).called(1);
           verify(() => mockUI.showProducts(products)).called(1);
           verifyNever(() => mockUI.showError(any()));
@@ -64,7 +66,9 @@ void main() {
           await controller.executeOption(MenuOption.getAllProducts);
 
           // Assert
-          verify(() => mockUI.showLoading('Obteniendo productos...')).called(1);
+          verify(
+            () => mockUI.showLoading(AppStrings.loadingProducts),
+          ).called(1);
           verify(() => mockRepository.getAllProducts()).called(1);
           verify(() => mockUI.showError('Sin conexión')).called(1);
           verifyNever(() => mockUI.showProducts(any()));
@@ -86,7 +90,7 @@ void main() {
           // Assert
           verify(() => mockUI.promptProductId()).called(1);
           verify(
-            () => mockUI.showLoading('Obteniendo producto #5...'),
+            () => mockUI.showLoading(AppStrings.loadingProductById(5)),
           ).called(1);
           verify(() => mockRepository.getProductById(5)).called(1);
           verify(() => mockUI.showProduct(product)).called(1);
@@ -102,7 +106,7 @@ void main() {
 
           // Assert
           verify(() => mockUI.promptProductId()).called(1);
-          verify(() => mockUI.showError('ID inválido.')).called(1);
+          verify(() => mockUI.showError(AppStrings.invalidIdError)).called(1);
           verifyNever(() => mockRepository.getProductById(any()));
         });
 
@@ -110,14 +114,18 @@ void main() {
           // Arrange
           when(() => mockUI.promptProductId()).thenAnswer((_) async => 999);
           when(() => mockRepository.getProductById(999)).thenAnswer(
-            (_) async => const Left(NotFoundFailure('Producto no encontrado')),
+            (_) async => const Left(
+              NotFoundFailure(AppStrings.notFoundProductFailureMessage),
+            ),
           );
 
           // Act
           await controller.executeOption(MenuOption.getProductById);
 
           // Assert
-          verify(() => mockUI.showError('Producto no encontrado')).called(1);
+          verify(
+            () => mockUI.showError(AppStrings.notFoundProductFailureMessage),
+          ).called(1);
           verifyNever(() => mockUI.showProduct(any()));
         });
       });
@@ -135,7 +143,7 @@ void main() {
 
           // Assert
           verify(
-            () => mockUI.showLoading('Obteniendo categorías...'),
+            () => mockUI.showLoading(AppStrings.loadingCategories),
           ).called(1);
           verify(() => mockRepository.getAllCategories()).called(1);
           verify(() => mockUI.showCategories(categories)).called(1);
@@ -144,7 +152,7 @@ void main() {
 
         test('muestra error cuando el repositorio falla', () async {
           // Arrange
-          const failure = ServerFailure('Error del servidor');
+          const failure = ServerFailure(AppStrings.serverFailureMessage);
           when(
             () => mockRepository.getAllCategories(),
           ).thenAnswer((_) async => const Left(failure));
@@ -153,7 +161,9 @@ void main() {
           await controller.executeOption(MenuOption.getAllCategories);
 
           // Assert
-          verify(() => mockUI.showError('Error del servidor')).called(1);
+          verify(
+            () => mockUI.showError(AppStrings.serverFailureMessage),
+          ).called(1);
           verifyNever(() => mockUI.showCategories(any()));
         });
       });
@@ -186,7 +196,7 @@ void main() {
             verify(() => mockUI.promptCategory(categories)).called(1);
             verify(
               () => mockUI.showLoading(
-                'Obteniendo productos de "electronics"...',
+                AppStrings.loadingProductsByCategory('electronics'),
               ),
             ).called(1);
             verify(
@@ -229,7 +239,9 @@ void main() {
             await controller.executeOption(MenuOption.getProductsByCategory);
 
             // Assert
-            verify(() => mockUI.showError('Categoría inválida.')).called(1);
+            verify(
+              () => mockUI.showError(AppStrings.invalidCategoryError),
+            ).called(1);
             verifyNever(() => mockRepository.getProductsByCategory(any()));
           },
         );
@@ -251,7 +263,9 @@ void main() {
           await controller.executeOption(MenuOption.invalid);
 
           // Assert
-          verify(() => mockUI.showError('Opción inválida.')).called(1);
+          verify(
+            () => mockUI.showError(AppStrings.invalidOptionErrorShort),
+          ).called(1);
         });
       });
     });
@@ -267,7 +281,7 @@ void main() {
         await controller.run();
 
         // Assert
-        verify(() => mockUI.showWelcome('Bienvenido a Fake Store')).called(1);
+        verify(() => mockUI.showWelcome(AppStrings.welcomeMessage)).called(1);
         verify(() => mockUI.showMainMenu()).called(1);
         verify(() => mockUI.showGoodbye()).called(1);
         expect(onExitCalled, isTrue);
@@ -321,9 +335,7 @@ void main() {
         await controller.run();
 
         // Assert
-        verify(
-          () => mockUI.showError('Opción inválida. Intenta de nuevo.'),
-        ).called(1);
+        verify(() => mockUI.showError(AppStrings.invalidOptionError)).called(1);
         verify(() => mockUI.showMainMenu()).called(2);
         verify(() => mockUI.showGoodbye()).called(1);
       });
