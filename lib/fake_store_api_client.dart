@@ -81,3 +81,18 @@ export 'src/domain/entities/entities.dart';
 
 // API Pública - Failures
 export 'src/domain/failures/failures.dart';
+
+// API Pública - Presentación (Ports & Adapters)
+export 'src/presentation/presentation.dart';
+
+// API Pública - Repositorio (para inyección)
+export 'src/domain/repositories/repositories.dart';
+
+// API Pública - Data sources (para inyección de dependencias)
+export 'src/data/datasources/datasources.dart';
+
+// API Pública - Implementaciones de repositorios (para inyección)
+export 'src/data/repositories/repositories.dart';
+
+// API Pública - Network (para inyección de dependencias avanzada)
+export 'src/core/network/network.dart';

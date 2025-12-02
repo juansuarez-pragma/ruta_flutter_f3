@@ -135,6 +135,41 @@ El ejemplo ahora sigue las buenas prácticas de paquetes Flutter publicados:
 
 ---
 
+## [1.3.0] - 2025-12-02
+
+### Agregado
+
+- **Patrón Ports & Adapters (Arquitectura Hexagonal)**:
+  - `UserInterface`: Contrato abstracto para interfaces de usuario
+  - `UserInput`: Contrato para entrada de usuario
+  - `MessageOutput`: Contrato para mensajes de salida
+  - `ProductOutput`: Contrato para mostrar productos
+  - `CategoryOutput`: Contrato para mostrar categorías
+  - `MenuOption`: Enum con opciones del menú de la aplicación
+  - `ApplicationController`: Orquestador que coordina UI y repositorio
+
+- **Exports públicos ampliados**:
+  - `presentation.dart`: Contratos y controlador
+  - `repositories.dart`: Contrato e implementación de repositorio
+  - `datasources.dart`: ApiClient, ApiClientImpl, FakeStoreDatasource
+  - `network.dart`: HttpResponseHandler, HttpStatusCodes
+
+- **Ejemplo refactorizado**:
+  - `FlutterUserInterface`: Adapter que implementa `UserInterface` para Flutter
+  - Uso de `ApplicationController` con inyección de dependencias
+  - Diálogo informativo sobre la arquitectura hexagonal
+
+- **Tests nuevos**:
+  - 16 tests para `ApplicationController`
+  - Tests de integración con mocks para `UserInterface`
+
+### Cambiado
+
+- Ejemplo ahora demuestra el patrón Ports & Adapters en acción
+- Documentación actualizada en CLAUDE.md
+
+---
+
 ## [Unreleased]
 
 ### Planeado
