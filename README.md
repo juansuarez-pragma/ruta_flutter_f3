@@ -7,20 +7,16 @@ Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Ar
 
 ## Características
 
+- **API simplificada**: Un único punto de entrada con `FakeStoreApi`
 - Obtener todos los productos
 - Obtener un producto por ID
 - Obtener todas las categorías
 - Obtener productos por categoría
 - Manejo funcional de errores con `Either<Failure, Success>`
-- Clean Architecture con separación de capas
 - Patrón Ports & Adapters (Arquitectura Hexagonal)
-- Sealed classes para pattern matching exhaustivo
-- Sin dependencias externas innecesarias (solo `http`)
 - Soporte multiplataforma: iOS, Android, Windows, macOS, Linux
 
 ## Instalación
-
-Agrega el paquete a tu `pubspec.yaml`:
 
 ```yaml
 dependencies:
@@ -30,190 +26,119 @@ dependencies:
       ref: main
 ```
 
-O si tienes el paquete localmente:
-
-```yaml
-dependencies:
-  fake_store_api_client:
-    path: ../fake_store_api_client
-```
-
-## Uso Básico
-
-### Usando el Repositorio Directamente
+## Uso Rápido
 
 ```dart
 import 'package:fake_store_api_client/fake_store_api_client.dart';
-import 'package:http/http.dart' as http;
 
 void main() async {
-  // Crear infraestructura
-  final datasource = FakeStoreDatasource(
-    apiClient: ApiClientImpl(
-      client: http.Client(),
-      baseUrl: 'https://fakestoreapi.com',
-      timeout: Duration(seconds: 30),
-      responseHandler: HttpResponseHandler(),
-    ),
-  );
-  final repository = ProductRepositoryImpl(datasource: datasource);
+  // Crear el repositorio (una sola línea)
+  final repository = FakeStoreApi.createRepository();
 
-  // Obtener todos los productos
+  // Usar el repositorio
   final result = await repository.getAllProducts();
 
   result.fold(
     (failure) => print('Error: ${failure.message}'),
-    (products) {
-      print('Se encontraron ${products.length} productos');
-      for (final product in products) {
-        print('- ${product.title}: \$${product.price}');
-      }
-    },
+    (products) => print('Productos: ${products.length}'),
   );
 }
 ```
 
-### Usando el Patrón Ports & Adapters
+## API Pública
 
-Para aplicaciones con UI, usa `ApplicationController` con tu implementación de `UserInterface`:
+El paquete expone únicamente lo necesario:
 
 ```dart
-final controller = ApplicationController(
-  ui: MiUserInterface(), // Tu implementación
-  repository: repository,
-);
+import 'package:fake_store_api_client/fake_store_api_client.dart';
+```
 
-await controller.executeOption(MenuOption.getAllProducts);
+| Clase | Descripción |
+|-------|-------------|
+| `FakeStoreApi` | Factory para crear repositorio y controlador |
+| `ProductRepository` | Contrato del repositorio |
+| `Product`, `ProductRating` | Entidades de dominio |
+| `Either`, `Left`, `Right` | Tipo para manejo de errores |
+| `FakeStoreFailure` | Clase base de errores (sealed) |
+| `ApplicationController` | Controlador para Ports & Adapters |
+| `UserInterface` | Contrato de UI a implementar |
+| `MenuOption` | Enum de opciones del menú |
+| `AppStrings` | Textos centralizados |
+
+## Configuración Personalizada
+
+```dart
+final repository = FakeStoreApi.createRepository(
+  baseUrl: 'https://mi-api.com',
+  timeout: Duration(seconds: 60),
+);
 ```
 
 ## Métodos del Repositorio
 
-### getAllProducts()
-
-Obtiene todos los productos de la tienda.
-
 ```dart
-final result = await repository.getAllProducts();
-result.fold(
-  (failure) => print('Error: ${failure.message}'),
-  (products) => print('Productos: ${products.length}'),
-);
-```
+// Obtener todos los productos
+final products = await repository.getAllProducts();
 
-### getProductById(int id)
+// Obtener producto por ID
+final product = await repository.getProductById(1);
 
-Obtiene un producto específico por su ID.
+// Obtener categorías
+final categories = await repository.getAllCategories();
 
-```dart
-final result = await repository.getProductById(1);
-result.fold(
-  (failure) {
-    if (failure is NotFoundFailure) {
-      print('Producto no encontrado');
-    }
-  },
-  (product) => print('Encontrado: ${product.title}'),
-);
-```
-
-### getAllCategories()
-
-Obtiene todas las categorías disponibles.
-
-```dart
-final result = await repository.getAllCategories();
-result.fold(
-  (failure) => print('Error: ${failure.message}'),
-  (categories) {
-    print('Categorías:');
-    for (final category in categories) {
-      print('- $category');
-    }
-  },
-);
-```
-
-### getProductsByCategory(String category)
-
-Obtiene productos de una categoría específica.
-
-```dart
-final result = await repository.getProductsByCategory('electronics');
-result.fold(
-  (failure) => print('Error: ${failure.message}'),
-  (products) => print('Productos en electronics: ${products.length}'),
-);
+// Obtener productos por categoría
+final electronics = await repository.getProductsByCategory('electronics');
 ```
 
 ## Manejo de Errores
 
-El paquete usa el tipo `Either<FakeStoreFailure, T>` para manejo funcional de errores. Los tipos de errores posibles son:
-
-| Tipo | Descripción |
-|------|-------------|
-| `ConnectionFailure` | Error de conexión de red |
-| `ServerFailure` | Error del servidor (5xx) |
-| `NotFoundFailure` | Recurso no encontrado (404) |
-| `InvalidRequestFailure` | Solicitud inválida (4xx) |
-
-### Ejemplo con Pattern Matching
-
 ```dart
 final result = await repository.getProductById(1);
 
+// Opción 1: fold
+result.fold(
+  (failure) => print('Error: ${failure.message}'),
+  (product) => print('Producto: ${product.title}'),
+);
+
+// Opción 2: Pattern matching
 switch (result) {
   case Left(value: final failure):
     switch (failure) {
-      case ConnectionFailure():
-        print('Sin conexión a internet');
-      case ServerFailure():
-        print('Error del servidor');
-      case NotFoundFailure():
-        print('Producto no encontrado');
-      case InvalidRequestFailure():
-        print('Solicitud inválida');
+      case ConnectionFailure(): print('Sin conexión');
+      case ServerFailure(): print('Error del servidor');
+      case NotFoundFailure(): print('No encontrado');
+      case InvalidRequestFailure(): print('Solicitud inválida');
     }
   case Right(value: final product):
     print('Producto: ${product.title}');
 }
 ```
 
-## Modelos
+## Patrón Ports & Adapters
 
-### Product
-
-```dart
-class Product {
-  final int id;
-  final String title;
-  final double price;
-  final String description;
-  final String category;
-  final String image;
-  final ProductRating rating;
-}
-```
-
-### ProductRating
+Para aplicaciones con UI:
 
 ```dart
-class ProductRating {
-  final double rate;  // 0.0 - 5.0
-  final int count;    // Número de reseñas
+// Implementar el adapter
+class FlutterUI implements UserInterface {
+  @override
+  void showProducts(List<Product> products) {
+    // Actualizar UI
+  }
+  // ... otros métodos
 }
+
+// Crear el controlador
+final controller = FakeStoreApi.createController(
+  ui: FlutterUI(),
+);
+
+// Ejecutar operaciones
+await controller.executeOption(MenuOption.getAllProducts);
 ```
 
 ## Ejemplo Completo
-
-El paquete incluye un ejemplo completo en Flutter que demuestra:
-
-- Patrón Ports & Adapters en acción
-- Listado de productos en grid
-- Filtrado por categorías
-- Detalle de producto
-- Manejo de estados de carga y error
-
-Para ejecutar el ejemplo:
 
 ```bash
 cd example
@@ -222,52 +147,23 @@ flutter run
 
 ## Arquitectura
 
-El paquete está construido con Clean Architecture y patrón Ports & Adapters:
-
 ```
 lib/
-├── fake_store_api_client.dart  # API pública
-└── src/
+├── fake_store_api_client.dart  # API pública (único punto de entrada)
+└── src/                         # Implementación privada
+    ├── fake_store_api.dart      # Factory principal
     ├── presentation/            # Ports & Adapters
     ├── domain/                  # Entidades y contratos
     ├── data/                    # Implementaciones
-    └── core/                    # Utilidades compartidas
+    └── core/                    # Utilidades
 ```
 
-## Dependencias
+> **Nota:** Todo el código en `lib/src/` es privado. Solo se expone lo definido en `lib/fake_store_api_client.dart`.
 
-- `http`: Cliente HTTP
+## Documentación
 
-> **Nota:** Este paquete usa implementaciones propias de `Either` y comparación por valor, sin depender de paquetes externos como `dartz` o `equatable`.
-
-## Troubleshooting
-
-### Error de TimeoutException en Android Emulator
-
-Si la app muestra `TimeoutException` solo en el emulador Android (pero funciona en Chrome y dispositivos físicos), el problema es la resolución DNS del emulador.
-
-**Solución**: Iniciar el emulador con DNS de Google:
-
-```bash
-emulator -avd <nombre-avd> -dns-server 8.8.8.8,8.8.4.4
-```
-
-**Diagnóstico**:
-```bash
-# Si esto falla, es problema de DNS
-adb -s emulator-5554 shell ping -c 2 fakestoreapi.com
-```
-
-Ver [CLAUDE.md](CLAUDE.md) para más detalles de troubleshooting.
-
-## Documentación para Desarrolladores
-
-Para contribuidores y agentes de IA, ver [CLAUDE.md](CLAUDE.md) que contiene:
-- Arquitectura detallada del paquete
-- Patrones de diseño utilizados
-- Guía de mejores prácticas
-- Instrucciones para extender el paquete
+Ver [CLAUDE.md](CLAUDE.md) para arquitectura detallada y guía de desarrollo.
 
 ## Licencia
 
-MIT License - ver archivo [LICENSE](LICENSE) para más detalles.
+MIT License

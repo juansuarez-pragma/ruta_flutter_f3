@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fake_store_api_client/fake_store_api_client.dart';
 import 'package:fake_store_api_client/src/core/errors/errors.dart';
+import 'package:fake_store_api_client/src/data/repositories/product_repository_impl.dart';
 
 import '../../../helpers/mocks.dart';
 import '../../../helpers/test_helpers.dart';

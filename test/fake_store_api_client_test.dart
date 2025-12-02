@@ -77,5 +77,4 @@ void main() {
       expect(failure.message, customMessage);
     });
   });
-
 }

@@ -1,6 +1,5 @@
 import 'package:fake_store_api_client/fake_store_api_client.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'adapters/flutter_user_interface.dart';
 
@@ -117,22 +116,8 @@ class _ProductsPageState extends State<ProductsPage> {
       },
     );
 
-    // Crear el repositorio (implementación concreta)
-    final datasource = FakeStoreDatasource(
-      apiClient: ApiClientImpl(
-        client: http.Client(),
-        baseUrl: 'https://fakestoreapi.com',
-        timeout: const Duration(seconds: 30),
-        responseHandler: HttpResponseHandler(),
-      ),
-    );
-    final repository = ProductRepositoryImpl(datasource: datasource);
-
-    // Crear el controlador con inyección de dependencias
-    _controller = ApplicationController(
-      ui: _userInterface,
-      repository: repository,
-    );
+    // Crear el controlador usando el factory (una sola línea)
+    _controller = FakeStoreApi.createController(ui: _userInterface);
   }
 
   /// Carga los datos iniciales usando el controller.

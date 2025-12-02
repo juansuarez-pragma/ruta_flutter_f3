@@ -5,6 +5,34 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.5.0] - 2025-12-02
+
+### Agregado
+
+- **`FakeStoreApi`**: Nuevo factory como único punto de entrada público
+  - `FakeStoreApi.createRepository()` - Crea repositorio listo para usar
+  - `FakeStoreApi.createController(ui:)` - Crea controlador para Ports & Adapters
+  - Configuración opcional: `baseUrl`, `timeout`, `httpClient`
+
+### Cambiado
+
+- **API pública simplificada**: Solo se exporta lo necesario usando `export ... show`
+- **Clases internas ahora son privadas**:
+  - `ApiClientImpl`, `FakeStoreDatasource`, `ProductRepositoryImpl` ya no están expuestas
+  - `HttpResponseHandler`, `HttpStatusCodes` ya no están expuestas
+  - Los consumidores usan `FakeStoreApi` en lugar de crear dependencias manualmente
+- **Ejemplo actualizado**: Usa `FakeStoreApi.createController()` en lugar de crear manualmente
+- **Documentación actualizada**: Refleja la nueva API simplificada
+
+### Motivo
+
+Siguiendo las [mejores prácticas de Dart](https://dart.dev/guides/libraries/create-packages):
+- Un único punto de entrada público (`lib/fake_store_api_client.dart`)
+- Todo en `lib/src/` es privado por convención
+- Uso de `export ... show` para control explícito de API
+
+---
+
 ## [1.0.0] - 2024-01-15
 
 ### Agregado

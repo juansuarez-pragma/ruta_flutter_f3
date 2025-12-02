@@ -15,21 +15,12 @@
 ///
 /// ```dart
 /// import 'package:fake_store_api_client/fake_store_api_client.dart';
-/// import 'package:http/http.dart' as http;
 ///
 /// void main() async {
-///   // Crear infraestructura
-///   final datasource = FakeStoreDatasource(
-///     apiClient: ApiClientImpl(
-///       client: http.Client(),
-///       baseUrl: 'https://fakestoreapi.com',
-///       timeout: Duration(seconds: 30),
-///       responseHandler: HttpResponseHandler(),
-///     ),
-///   );
-///   final repository = ProductRepositoryImpl(datasource: datasource);
+///   // Crear el repositorio (única línea necesaria)
+///   final repository = FakeStoreApi.createRepository();
 ///
-///   // Usar el repositorio directamente
+///   // Usar el repositorio
 ///   final result = await repository.getAllProducts();
 ///   result.fold(
 ///     (failure) => print('Error: ${failure.message}'),
@@ -38,15 +29,22 @@
 /// }
 /// ```
 ///
-/// ## Patrón Ports & Adapters
-///
-/// Para aplicaciones con UI, use [ApplicationController] con una
-/// implementación de [UserInterface]:
+/// ## Configuración personalizada
 ///
 /// ```dart
-/// final controller = ApplicationController(
-///   ui: MiUserInterface(), // Tu implementación
-///   repository: repository,
+/// final repository = FakeStoreApi.createRepository(
+///   baseUrl: 'https://mi-api.com',
+///   timeout: Duration(seconds: 60),
+/// );
+/// ```
+///
+/// ## Patrón Ports & Adapters
+///
+/// Para aplicaciones con UI, use [FakeStoreApi.createController]:
+///
+/// ```dart
+/// final controller = FakeStoreApi.createController(
+///   ui: MiUserInterface(), // Tu implementación de UserInterface
 /// );
 ///
 /// await controller.executeOption(MenuOption.getAllProducts);
@@ -83,29 +81,37 @@
 /// - [InvalidRequestFailure]: Solicitud inválida (4xx)
 library;
 
-// API Pública - Either (tipo propio)
-export 'src/core/either/either.dart';
+// ============================================================================
+// API PÚBLICA - Solo se exporta lo necesario para consumir la librería
+// ============================================================================
 
-// API Pública - Entidades del dominio
-export 'src/domain/entities/entities.dart';
+// Punto de entrada principal - Factory para crear repositorio y controlador
+export 'src/fake_store_api.dart' show FakeStoreApi;
 
-// API Pública - Failures
-export 'src/domain/failures/failures.dart';
+// Tipo Either para manejo funcional de errores
+export 'src/core/either/either.dart' show Either, Left, Right;
 
-// API Pública - Presentación (Ports & Adapters)
-export 'src/presentation/presentation.dart';
+// Entidades del dominio (datos que retorna la API)
+export 'src/domain/entities/product.dart' show Product;
+export 'src/domain/entities/product_rating.dart' show ProductRating;
 
-// API Pública - Repositorio (para inyección)
-export 'src/domain/repositories/repositories.dart';
+// Failures (tipos de error que pueden ocurrir)
+export 'src/domain/failures/fake_store_failure.dart'
+    show
+        FakeStoreFailure,
+        ConnectionFailure,
+        ServerFailure,
+        NotFoundFailure,
+        InvalidRequestFailure;
 
-// API Pública - Data sources (para inyección de dependencias)
-export 'src/data/datasources/datasources.dart';
+// Contrato del repositorio (para tipado e inyección de dependencias)
+export 'src/domain/repositories/product_repository.dart' show ProductRepository;
 
-// API Pública - Implementaciones de repositorios (para inyección)
-export 'src/data/repositories/repositories.dart';
+// Patrón Ports & Adapters (para aplicaciones con UI)
+export 'src/presentation/controller/application_controller.dart'
+    show ApplicationController;
+export 'src/presentation/contracts/user_interface.dart' show UserInterface;
+export 'src/presentation/contracts/menu_option.dart' show MenuOption;
 
-// API Pública - Network (para inyección de dependencias avanzada)
-export 'src/core/network/network.dart';
-
-// API Pública - Constantes y strings
-export 'src/core/constants/app_strings.dart';
+// Textos centralizados para UI
+export 'src/core/constants/app_strings.dart' show AppStrings;
