@@ -10,7 +10,6 @@ import 'package:fake_store_api_client/src/core/network/http_response_handler.dar
 import 'package:fake_store_api_client/src/data/datasources/api_client.dart';
 import 'package:fake_store_api_client/src/data/datasources/fake_store_datasource.dart';
 import 'package:fake_store_api_client/src/domain/repositories/product_repository.dart';
-import 'package:fake_store_api_client/src/presentation/contracts/user_interface.dart';
 
 /// Mock del cliente HTTP.
 class MockHttpClient extends Mock implements http.Client {}
@@ -26,9 +25,6 @@ class MockFakeStoreDatasource extends Mock implements FakeStoreDatasource {}
 
 /// Mock del repositorio de productos.
 class MockProductRepository extends Mock implements ProductRepository {}
-
-/// Mock de la interfaz de usuario.
-class MockUserInterface extends Mock implements UserInterface {}
 
 /// Clase para registrar fallback values.
 class FakeUri extends Fake implements Uri {}

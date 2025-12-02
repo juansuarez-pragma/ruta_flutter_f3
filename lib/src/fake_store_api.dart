@@ -5,17 +5,17 @@ import 'package:fake_store_api_client/src/data/datasources/api_client_impl.dart'
 import 'package:fake_store_api_client/src/data/datasources/fake_store_datasource.dart';
 import 'package:fake_store_api_client/src/data/repositories/product_repository_impl.dart';
 import 'package:fake_store_api_client/src/domain/repositories/product_repository.dart';
-import 'package:fake_store_api_client/src/presentation/contracts/user_interface.dart';
-import 'package:fake_store_api_client/src/presentation/controller/application_controller.dart';
 
 /// Punto de entrada principal para usar la Fake Store API.
 ///
-/// Esta clase proporciona factories para crear instancias configuradas
-/// del repositorio y controlador, ocultando los detalles de implementación.
+/// Esta clase proporciona un factory para crear una instancia configurada
+/// del repositorio, ocultando los detalles de implementación.
 ///
 /// ## Uso básico
 ///
 /// ```dart
+/// import 'package:fake_store_api_client/fake_store_api_client.dart';
+///
 /// // Obtener el repositorio listo para usar
 /// final repository = FakeStoreApi.createRepository();
 ///
@@ -35,16 +35,6 @@ import 'package:fake_store_api_client/src/presentation/controller/application_co
 ///   timeout: Duration(seconds: 60),
 /// );
 /// ```
-///
-/// ## Con patrón Ports & Adapters
-///
-/// ```dart
-/// final controller = FakeStoreApi.createController(
-///   ui: MiFlutterUserInterface(),
-/// );
-///
-/// await controller.executeOption(MenuOption.getAllProducts);
-/// ```
 abstract final class FakeStoreApi {
   /// URL base por defecto de la Fake Store API.
   static const String defaultBaseUrl = 'https://fakestoreapi.com';
@@ -63,9 +53,16 @@ abstract final class FakeStoreApi {
   /// ```dart
   /// final repository = FakeStoreApi.createRepository();
   ///
+  /// // Obtener todos los productos
   /// final products = await repository.getAllProducts();
+  ///
+  /// // Obtener un producto por ID
   /// final product = await repository.getProductById(1);
+  ///
+  /// // Obtener todas las categorías
   /// final categories = await repository.getAllCategories();
+  ///
+  /// // Obtener productos por categoría
   /// final electronics = await repository.getProductsByCategory('electronics');
   /// ```
   static ProductRepository createRepository({
@@ -83,47 +80,5 @@ abstract final class FakeStoreApi {
     );
     final datasource = FakeStoreDatasource(apiClient: apiClient);
     return ProductRepositoryImpl(datasource: datasource);
-  }
-
-  /// Crea una instancia de [ApplicationController] para el patrón Ports & Adapters.
-  ///
-  /// [ui] es la implementación de [UserInterface] para tu plataforma.
-  /// [baseUrl] es la URL base de la API.
-  /// [timeout] es el tiempo máximo de espera para las solicitudes HTTP.
-  /// [httpClient] permite inyectar un cliente HTTP personalizado.
-  /// [onExit] es un callback opcional que se ejecuta al salir.
-  ///
-  /// ## Ejemplo
-  ///
-  /// ```dart
-  /// final controller = FakeStoreApi.createController(
-  ///   ui: FlutterUserInterface(
-  ///     onShowProducts: (products) => setState(() => _products = products),
-  ///     onShowError: (message) => showSnackBar(message),
-  ///     // ... otros callbacks
-  ///   ),
-  /// );
-  ///
-  /// // Ejecutar operaciones
-  /// await controller.executeOption(MenuOption.getAllProducts);
-  /// await controller.executeOption(MenuOption.getProductById);
-  /// ```
-  static ApplicationController createController({
-    required UserInterface ui,
-    String baseUrl = defaultBaseUrl,
-    Duration timeout = defaultTimeout,
-    http.Client? httpClient,
-    void Function()? onExit,
-  }) {
-    final repository = createRepository(
-      baseUrl: baseUrl,
-      timeout: timeout,
-      httpClient: httpClient,
-    );
-    return ApplicationController(
-      ui: ui,
-      repository: repository,
-      onExit: onExit,
-    );
   }
 }

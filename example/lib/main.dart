@@ -1,22 +1,11 @@
 import 'package:fake_store_api_client/fake_store_api_client.dart';
 import 'package:flutter/material.dart';
 
-import 'adapters/flutter_user_interface.dart';
-
 void main() {
   runApp(const MyApp());
 }
 
-/// Aplicación de ejemplo que demuestra el uso del paquete fake_store_api_client
-/// con el patrón Ports & Adapters.
-///
-/// ## Patrón Ports & Adapters (Hexagonal Architecture)
-///
-/// Esta aplicación demuestra cómo la misma lógica de negocio puede funcionar
-/// con diferentes interfaces de usuario (consola, Flutter, web, etc.).
-///
-/// El [ApplicationController] no conoce los detalles de la UI, solo
-/// interactúa a través de la abstracción [UserInterface].
+/// Aplicación de ejemplo que demuestra el uso del paquete fake_store_api_client.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -34,9 +23,6 @@ class MyApp extends StatelessWidget {
 }
 
 /// Página principal que muestra los productos de la API.
-///
-/// Utiliza el patrón Ports & Adapters para separar la lógica de negocio
-/// de la interfaz de usuario.
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
 
@@ -45,11 +31,8 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  /// Controlador de la aplicación (Ports & Adapters).
-  late final ApplicationController _controller;
-
-  /// Adapter de UI para Flutter.
-  late final FlutterUserInterface _userInterface;
+  /// Repositorio para acceder a la API.
+  late final ProductRepository _repository;
 
   /// Lista de productos cargados.
   List<Product> _products = [];
@@ -69,94 +52,86 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
     super.initState();
-    _initializeController();
+    // Crear el repositorio (una sola línea)
+    _repository = FakeStoreApi.createRepository();
     _loadInitialData();
   }
 
-  /// Inicializa el controlador con el adapter de Flutter.
-  ///
-  /// Aquí se demuestra la inyección de dependencias y el patrón
-  /// Ports & Adapters en acción.
-  void _initializeController() {
-    // Crear el adapter de Flutter con callbacks
-    _userInterface = FlutterUserInterface(
-      onShowLoading: (message) {
-        setState(() {
-          _isLoading = true;
-          _errorMessage = null;
-        });
-      },
-      onShowError: (message) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = message;
-        });
-        _showSnackBar(message, isError: true);
-      },
-      onShowSuccess: (message) {
-        setState(() => _isLoading = false);
-        _showSnackBar(message);
-      },
-      onShowProducts: (products) {
-        setState(() {
-          _isLoading = false;
-          _products = products;
-          _errorMessage = null;
-        });
-      },
-      onShowCategories: (categories) {
-        setState(() {
-          _categories = categories;
-        });
-      },
-      onPromptCategory: (availableCategories) async {
-        // En Flutter, la selección se hace via FilterChips
-        // Este callback se usa cuando el controller necesita una categoría
-        return _selectedCategory;
-      },
-    );
-
-    // Crear el controlador usando el factory (una sola línea)
-    _controller = FakeStoreApi.createController(ui: _userInterface);
-  }
-
-  /// Carga los datos iniciales usando el controller.
+  /// Carga los datos iniciales.
   Future<void> _loadInitialData() async {
-    // Cargar categorías
-    await _controller.executeOption(MenuOption.getAllCategories);
-
-    // Cargar todos los productos
-    await _controller.executeOption(MenuOption.getAllProducts);
+    await _loadCategories();
+    await _loadAllProducts();
   }
 
-  /// Carga productos por categoría usando el controller.
-  Future<void> _loadProductsByCategory(String category) async {
-    setState(() => _selectedCategory = category);
-
-    // El controller usará el callback onPromptCategory que retorna _selectedCategory
-    await _controller.executeOption(MenuOption.getProductsByCategory);
+  /// Carga las categorías.
+  Future<void> _loadCategories() async {
+    final result = await _repository.getAllCategories();
+    result.fold(
+      (failure) => _showError(failure.message),
+      (categories) => setState(() => _categories = categories),
+    );
   }
 
   /// Carga todos los productos.
   Future<void> _loadAllProducts() async {
-    setState(() => _selectedCategory = null);
-    await _controller.executeOption(MenuOption.getAllProducts);
-  }
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+      _selectedCategory = null;
+    });
 
-  /// Muestra un SnackBar con un mensaje.
-  void _showSnackBar(String message, {bool isError = false}) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-      ),
+    final result = await _repository.getAllProducts();
+
+    result.fold(
+      (failure) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = failure.message;
+        });
+        _showError(failure.message);
+      },
+      (products) {
+        setState(() {
+          _isLoading = false;
+          _products = products;
+        });
+      },
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  /// Carga productos por categoría.
+  Future<void> _loadProductsByCategory(String category) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+      _selectedCategory = category;
+    });
+
+    final result = await _repository.getProductsByCategory(category);
+
+    result.fold(
+      (failure) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = failure.message;
+        });
+        _showError(failure.message);
+      },
+      (products) {
+        setState(() {
+          _isLoading = false;
+          _products = products;
+        });
+      },
+    );
+  }
+
+  /// Muestra un error en un SnackBar.
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -165,67 +140,11 @@ class _ProductsPageState extends State<ProductsPage> {
       appBar: AppBar(
         title: const Text('Fake Store'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: _showArchitectureInfo,
-            tooltip: 'Ver arquitectura',
-          ),
-        ],
       ),
       body: Column(
         children: [
-          // Filtro de categorías
           _buildCategoryFilter(),
-          // Lista de productos
           Expanded(child: _buildProductList()),
-        ],
-      ),
-    );
-  }
-
-  /// Muestra información sobre la arquitectura.
-  void _showArchitectureInfo() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Patrón Ports & Adapters'),
-        content: const SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Esta app demuestra el patrón Hexagonal Architecture:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 12),
-              Text('• Port: UserInterface (contrato)'),
-              Text('• Adapter: FlutterUserInterface'),
-              Text('• Core: ApplicationController'),
-              SizedBox(height: 12),
-              Text(
-                'La misma lógica de negocio puede funcionar con:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text('• Aplicaciones de consola'),
-              Text('• Aplicaciones Flutter'),
-              Text('• Aplicaciones web'),
-              SizedBox(height: 12),
-              Text(
-                'El controller no conoce Flutter, solo interactúa '
-                'con la abstracción UserInterface.',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Entendido'),
-          ),
         ],
       ),
     );
@@ -261,12 +180,10 @@ class _ProductsPageState extends State<ProductsPage> {
 
   /// Construye la lista de productos.
   Widget _buildProductList() {
-    // Estado de carga
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // Error
     if (_errorMessage != null) {
       return Center(
         child: Column(
@@ -285,12 +202,10 @@ class _ProductsPageState extends State<ProductsPage> {
       );
     }
 
-    // Sin productos
     if (_products.isEmpty) {
       return const Center(child: Text('No hay productos'));
     }
 
-    // Lista de productos
     return GridView.builder(
       padding: const EdgeInsets.all(8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -333,7 +248,6 @@ class _ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Imagen
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -347,7 +261,6 @@ class _ProductCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Información
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
@@ -394,7 +307,6 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Imagen
             Container(
               width: double.infinity,
               height: 300,
@@ -402,22 +314,18 @@ class ProductDetailPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Image.network(product.image, fit: BoxFit.contain),
             ),
-            // Contenido
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Categoría
                   Chip(label: Text(product.category)),
                   const SizedBox(height: 8),
-                  // Título
                   Text(
                     product.title,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
-                  // Precio y rating
                   Row(
                     children: [
                       Text(
@@ -435,7 +343,6 @@ class ProductDetailPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // Descripción
                   Text(
                     'Descripción',
                     style: Theme.of(context).textTheme.titleMedium,

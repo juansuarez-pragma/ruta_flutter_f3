@@ -4,9 +4,9 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 
 ## Descripción del Proyecto
 
-**fake_store_api_client** - Paquete Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture, patrón Ports & Adapters y manejo funcional de errores usando `Either<Failure, Success>`.
+**fake_store_api_client** - Paquete Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture y manejo funcional de errores usando `Either<Failure, Success>`.
 
-- Versión: 1.5.0
+- Versión: 1.6.0
 - SDK: Dart ^3.9.2, Flutter >=3.0.0
 - Dependencias: Solo `http`
 - Plataformas: iOS, Android, Windows, macOS, Linux (sin soporte Web aún)
@@ -42,7 +42,6 @@ lib/
 ├── fake_store_api_client.dart    # API pública (único import necesario)
 └── src/                           # Privado - no importar directamente
     ├── fake_store_api.dart        # Factory principal
-    ├── presentation/              # Patrón Ports & Adapters
     ├── domain/                    # Entidades y contratos
     ├── data/                      # Implementaciones
     └── core/                      # Utilidades
@@ -52,7 +51,7 @@ lib/
 
 ```dart
 // Lo que el consumidor puede usar:
-FakeStoreApi          // Factory para crear repositorio/controlador
+FakeStoreApi          // Factory para crear repositorio
 ProductRepository     // Contrato del repositorio
 Product              // Entidad de producto
 ProductRating        // Entidad de rating
@@ -62,15 +61,9 @@ FakeStoreFailure     // Clase base de errores (sealed)
   ├── ServerFailure
   ├── NotFoundFailure
   └── InvalidRequestFailure
-ApplicationController // Para Ports & Adapters
-UserInterface        // Contrato de UI
-MenuOption           // Enum de opciones
-AppStrings           // Textos centralizados
 ```
 
 ## Uso de la Librería
-
-### Uso Simple (Recomendado)
 
 ```dart
 import 'package:fake_store_api_client/fake_store_api_client.dart';
@@ -79,16 +72,11 @@ import 'package:fake_store_api_client/fake_store_api_client.dart';
 final repository = FakeStoreApi.createRepository();
 
 final result = await repository.getAllProducts();
-```
 
-### Con Patrón Ports & Adapters
-
-```dart
-final controller = FakeStoreApi.createController(
-  ui: MiFlutterUserInterface(),
+result.fold(
+  (failure) => print('Error: ${failure.message}'),
+  (products) => print('Productos: ${products.length}'),
 );
-
-await controller.executeOption(MenuOption.getAllProducts);
 ```
 
 ### Con Configuración Personalizada
@@ -113,10 +101,9 @@ HTTP Response → HttpResponseHandler (lanza Exception)
 
 | Patrón | Ubicación |
 |--------|-----------|
-| **Factory** | `FakeStoreApi` - crea repositorio/controlador |
+| **Factory** | `FakeStoreApi.createRepository()` - crea dependencias |
 | **Repository** | Contratos en domain, implementaciones en data |
 | **Strategy** | `HttpResponseHandler` - mapea códigos HTTP |
-| **Ports & Adapters** | `UserInterface` (port) + `ApplicationController` |
 
 ## Agregar Nuevas Funcionalidades
 
@@ -124,14 +111,14 @@ HTTP Response → HttpResponseHandler (lanza Exception)
 |-------|----------------------|
 | Nueva entidad | `domain/entities/` |
 | Nuevo endpoint | `core/constants/api_endpoints.dart` |
-| Nuevo método API | `ProductRepository` + `ProductRepositoryImpl` + `FakeStoreApi` |
+| Nuevo método API | `ProductRepository` + `ProductRepositoryImpl` |
 | Nuevo tipo de failure | `fake_store_failure.dart` |
 | Exponer nueva clase | `lib/fake_store_api_client.dart` (agregar export show) |
 
 ## Convenciones de Código
 
 - **Entities**: Inmutables, constructores `const`
-- **Models**: Extienden entities, incluyen `fromJson`/`toEntity()`
+- **Models**: Extienden entities, incluyen `fromJson`
 - **Repositories**: Retornan `Either`, nunca lanzan excepciones
 - **Exports**: Usar `show` para control explícito de API pública
 

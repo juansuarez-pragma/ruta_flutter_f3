@@ -3,17 +3,16 @@
 [![Pub Points](https://img.shields.io/badge/pub%20points-160%2F160-brightgreen)](https://pub.dev/packages/fake_store_api_client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture, patrón Ports & Adapters y manejo funcional de errores.
+Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture y manejo funcional de errores.
 
 ## Características
 
-- **API simplificada**: Un único punto de entrada con `FakeStoreApi`
+- **API simplificada**: Un único punto de entrada con `FakeStoreApi.createRepository()`
 - Obtener todos los productos
 - Obtener un producto por ID
 - Obtener todas las categorías
 - Obtener productos por categoría
 - Manejo funcional de errores con `Either<Failure, Success>`
-- Patrón Ports & Adapters (Arquitectura Hexagonal)
 - Soporte multiplataforma: iOS, Android, Windows, macOS, Linux
 
 ## Instalación
@@ -55,15 +54,11 @@ import 'package:fake_store_api_client/fake_store_api_client.dart';
 
 | Clase | Descripción |
 |-------|-------------|
-| `FakeStoreApi` | Factory para crear repositorio y controlador |
+| `FakeStoreApi` | Factory para crear el repositorio |
 | `ProductRepository` | Contrato del repositorio |
 | `Product`, `ProductRating` | Entidades de dominio |
 | `Either`, `Left`, `Right` | Tipo para manejo de errores |
 | `FakeStoreFailure` | Clase base de errores (sealed) |
-| `ApplicationController` | Controlador para Ports & Adapters |
-| `UserInterface` | Contrato de UI a implementar |
-| `MenuOption` | Enum de opciones del menú |
-| `AppStrings` | Textos centralizados |
 
 ## Configuración Personalizada
 
@@ -115,29 +110,6 @@ switch (result) {
 }
 ```
 
-## Patrón Ports & Adapters
-
-Para aplicaciones con UI:
-
-```dart
-// Implementar el adapter
-class FlutterUI implements UserInterface {
-  @override
-  void showProducts(List<Product> products) {
-    // Actualizar UI
-  }
-  // ... otros métodos
-}
-
-// Crear el controlador
-final controller = FakeStoreApi.createController(
-  ui: FlutterUI(),
-);
-
-// Ejecutar operaciones
-await controller.executeOption(MenuOption.getAllProducts);
-```
-
 ## Ejemplo Completo
 
 ```bash
@@ -152,7 +124,6 @@ lib/
 ├── fake_store_api_client.dart  # API pública (único punto de entrada)
 └── src/                         # Implementación privada
     ├── fake_store_api.dart      # Factory principal
-    ├── presentation/            # Ports & Adapters
     ├── domain/                  # Entidades y contratos
     ├── data/                    # Implementaciones
     └── core/                    # Utilidades

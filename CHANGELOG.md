@@ -5,13 +5,39 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.6.0] - 2025-12-02
+
+### Eliminado
+
+- **Patrón Ports & Adapters completo**:
+  - `ApplicationController` - Controlador de aplicación eliminado
+  - `UserInterface` - Contrato de interfaz de usuario eliminado
+  - `UserInput`, `MessageOutput`, `ProductOutput`, `CategoryOutput` - Contratos eliminados
+  - `MenuOption` - Enum de opciones eliminado
+  - `AppStrings` - Textos centralizados eliminados
+  - `FakeStoreApi.createController()` - Método factory eliminado
+
+### Cambiado
+
+- **Ejemplo simplificado**: Usa `FakeStoreApi.createRepository()` directamente
+- **API pública mínima**: Solo se expone lo esencial para consumir la API
+- **Tests reducidos**: De ~174 a tests relevantes para la funcionalidad core
+
+### Motivo
+
+Siguiendo el principio de Interface Segregation (ISP):
+- El patrón Ports & Adapters obligaba a implementar 9 métodos para cualquier uso
+- Una librería debe ser fácil de consumir con una sola llamada
+- El usuario ahora puede usar `repository.getAllProducts()` sin implementar interfaces
+
+---
+
 ## [1.5.0] - 2025-12-02
 
 ### Agregado
 
 - **`FakeStoreApi`**: Nuevo factory como único punto de entrada público
   - `FakeStoreApi.createRepository()` - Crea repositorio listo para usar
-  - `FakeStoreApi.createController(ui:)` - Crea controlador para Ports & Adapters
   - Configuración opcional: `baseUrl`, `timeout`, `httpClient`
 
 ### Cambiado
@@ -21,7 +47,6 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
   - `ApiClientImpl`, `FakeStoreDatasource`, `ProductRepositoryImpl` ya no están expuestas
   - `HttpResponseHandler`, `HttpStatusCodes` ya no están expuestas
   - Los consumidores usan `FakeStoreApi` en lugar de crear dependencias manualmente
-- **Ejemplo actualizado**: Usa `FakeStoreApi.createController()` en lugar de crear manualmente
 - **Documentación actualizada**: Refleja la nueva API simplificada
 
 ### Motivo

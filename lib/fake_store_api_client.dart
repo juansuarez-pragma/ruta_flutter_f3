@@ -1,30 +1,23 @@
 /// Cliente Flutter para la Fake Store API.
 ///
-/// Este paquete proporciona un cliente completo para interactuar con
-/// la [Fake Store API](https://fakestoreapi.com/), implementando el
-/// patrón Ports & Adapters (Arquitectura Hexagonal).
+/// Este paquete proporciona un cliente simple para interactuar con
+/// la [Fake Store API](https://fakestoreapi.com/).
 ///
-/// ## Características
-///
-/// - Obtener todos los productos
-/// - Obtener un producto por ID
-/// - Obtener todas las categorías
-/// - Obtener productos por categoría
-///
-/// ## Inicio rápido
+/// ## Uso
 ///
 /// ```dart
 /// import 'package:fake_store_api_client/fake_store_api_client.dart';
 ///
 /// void main() async {
-///   // Crear el repositorio (única línea necesaria)
+///   // Crear el repositorio (una sola línea)
 ///   final repository = FakeStoreApi.createRepository();
 ///
-///   // Usar el repositorio
+///   // Obtener todos los productos
 ///   final result = await repository.getAllProducts();
+///
 ///   result.fold(
 ///     (failure) => print('Error: ${failure.message}'),
-///     (products) => print('Se encontraron ${products.length} productos'),
+///     (products) => print('Productos: ${products.length}'),
 ///   );
 /// }
 /// ```
@@ -38,22 +31,18 @@
 /// );
 /// ```
 ///
-/// ## Patrón Ports & Adapters
-///
-/// Para aplicaciones con UI, use [FakeStoreApi.createController]:
+/// ## Métodos disponibles
 ///
 /// ```dart
-/// final controller = FakeStoreApi.createController(
-///   ui: MiUserInterface(), // Tu implementación de UserInterface
-/// );
-///
-/// await controller.executeOption(MenuOption.getAllProducts);
+/// repository.getAllProducts();
+/// repository.getProductById(1);
+/// repository.getAllCategories();
+/// repository.getProductsByCategory('electronics');
 /// ```
 ///
 /// ## Manejo de errores
 ///
-/// Todos los métodos retornan `Either<FakeStoreFailure, T>`.
-/// Esto permite un manejo funcional de errores:
+/// Todos los métodos retornan `Either<FakeStoreFailure, T>`:
 ///
 /// ```dart
 /// final result = await repository.getProductById(1);
@@ -85,7 +74,7 @@ library;
 // API PÚBLICA - Solo se exporta lo necesario para consumir la librería
 // ============================================================================
 
-// Punto de entrada principal - Factory para crear repositorio y controlador
+// Punto de entrada principal - Factory para crear el repositorio
 export 'src/fake_store_api.dart' show FakeStoreApi;
 
 // Tipo Either para manejo funcional de errores
@@ -106,12 +95,3 @@ export 'src/domain/failures/fake_store_failure.dart'
 
 // Contrato del repositorio (para tipado e inyección de dependencias)
 export 'src/domain/repositories/product_repository.dart' show ProductRepository;
-
-// Patrón Ports & Adapters (para aplicaciones con UI)
-export 'src/presentation/controller/application_controller.dart'
-    show ApplicationController;
-export 'src/presentation/contracts/user_interface.dart' show UserInterface;
-export 'src/presentation/contracts/menu_option.dart' show MenuOption;
-
-// Textos centralizados para UI
-export 'src/core/constants/app_strings.dart' show AppStrings;

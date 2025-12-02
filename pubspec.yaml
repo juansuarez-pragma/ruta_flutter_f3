@@ -1,6 +1,6 @@
 name: fake_store_api_client
 description: "Cliente Flutter para la Fake Store API con Clean Architecture y manejo funcional de errores."
-version: 1.5.0
+version: 1.6.0
 homepage: https://github.com/usuario/fake_store_api_client
 repository: https://github.com/usuario/fake_store_api_client
 issue_tracker: https://github.com/usuario/fake_store_api_client/issues
