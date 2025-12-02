@@ -199,6 +199,33 @@ ejecutarse como aplicación standalone.
 
 ---
 
+## [1.4.0] - 2025-12-02
+
+### Eliminado
+
+- **`FakeStoreClient`**: Clase facade eliminada (código no utilizado)
+  - Los métodos `getProducts()`, `getProductById()`, `getCategories()`, `getProductsByCategory()`
+    nunca se usaban en el código de producción
+  - El ejemplo ya usaba directamente `ApplicationController` + `ProductRepository`
+- **`FakeStoreConfig`**: Clase de configuración eliminada (solo era usada por `FakeStoreClient`)
+- **`toJson()` en modelos**: Métodos eliminados de `ProductModel` y `ProductRatingModel`
+  - Solo se usaban en tests, no en código de producción
+  - Este paquete es de solo lectura (consume API), no necesita serializar a JSON
+
+### Cambiado
+
+- Documentación actualizada para reflejar el uso directo del repositorio
+- README.md reescrito con ejemplos actualizados
+- CLAUDE.md simplificado sin referencias a código eliminado
+
+### Motivo
+
+Limpieza de código muerto. El paquete ahora expone:
+1. `ProductRepository` + `ProductRepositoryImpl` para uso directo
+2. `ApplicationController` + `UserInterface` para el patrón Ports & Adapters
+
+---
+
 ## [Unreleased]
 
 ### Planeado

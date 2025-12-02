@@ -51,20 +51,6 @@ void main() {
       });
     });
 
-    group('toJson', () {
-      test('convierte modelo a JSON correctamente', () {
-        // Arrange
-        const model = ProductRatingModel(rate: 4.5, count: 120);
-
-        // Act
-        final json = model.toJson();
-
-        // Assert
-        expect(json['rate'], 4.5);
-        expect(json['count'], 120);
-      });
-    });
-
     group('toEntity', () {
       test('convierte modelo a ProductRating correctamente', () {
         // Arrange

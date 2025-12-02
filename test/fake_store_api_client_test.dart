@@ -78,20 +78,4 @@ void main() {
     });
   });
 
-  group('FakeStoreConfig', () {
-    test('debe tener valores por defecto', () {
-      const config = FakeStoreConfig();
-      expect(config.baseUrl, 'https://fakestoreapi.com');
-      expect(config.timeout, const Duration(seconds: 30));
-    });
-
-    test('debe permitir configuración personalizada', () {
-      const config = FakeStoreConfig(
-        baseUrl: 'https://custom.api.com',
-        timeout: Duration(seconds: 60),
-      );
-      expect(config.baseUrl, 'https://custom.api.com');
-      expect(config.timeout, const Duration(seconds: 60));
-    });
-  });
 }

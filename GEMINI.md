@@ -4,13 +4,14 @@ Este documento proporciona un resumen del proyecto `fake_store_api_client` y su 
 
 ## 1. Descripción General del Proyecto
 
-`fake_store_api_client` es un cliente de Flutter para interactuar con la [Fake Store API](https://fakestoreapi.com/). El proyecto sigue los principios de la Clean Architecture y se enfoca en el manejo funcional de errores utilizando `Either<Failure, Success>`. No utiliza generación de código para el parseo de JSON, realizándolo de forma manual.
+`fake_store_api_client` es un cliente de Flutter para interactuar con la [Fake Store API](https://fakestoreapi.com/). El proyecto sigue los principios de la Clean Architecture con patrón Ports & Adapters y se enfoca en el manejo funcional de errores utilizando `Either<Failure, Success>`.
 
 ### Características Principales:
 
-*   **Clean Architecture:** Separación clara de capas (dominio, datos, cliente, core).
-*   **Manejo Funcional de Errores:** Implementación con `dartz` para un manejo robusto de errores.
-*   **Modelos Inmutables:** Uso de `equatable` para comparación de objetos por valor.
+*   **Clean Architecture:** Separación clara de capas (dominio, datos, presentación, core).
+*   **Patrón Ports & Adapters:** Arquitectura hexagonal para UI intercambiable.
+*   **Manejo Funcional de Errores:** Implementación propia de `Either` (sin dependencias externas).
+*   **Modelos Inmutables:** Implementación manual de `==` y `hashCode` (sin equatable).
 *   **Sin Generación de Código:** Parseo manual de JSON para los modelos de datos.
 
 ### Funcionalidades:
@@ -48,11 +49,22 @@ Luego, ejecuta `flutter pub get` en tu proyecto.
 
 ```dart
 import 'package:fake_store_api_client/fake_store_api_client.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
-  final client = FakeStoreClient();
+  // Crear infraestructura
+  final datasource = FakeStoreDatasource(
+    apiClient: ApiClientImpl(
+      client: http.Client(),
+      baseUrl: 'https://fakestoreapi.com',
+      timeout: Duration(seconds: 30),
+      responseHandler: HttpResponseHandler(),
+    ),
+  );
+  final repository = ProductRepositoryImpl(datasource: datasource);
 
-  final result = await client.getProducts();
+  // Usar el repositorio
+  final result = await repository.getAllProducts();
 
   result.fold(
     (failure) => print('Error: ${failure.message}'),
@@ -63,14 +75,12 @@ void main() async {
       }
     },
   );
-
-  client.dispose();
 }
 ```
 
 ### 2.3. Ejecución del Ejemplo Completo
 
-El proyecto incluye un directorio `example/` con una aplicación Flutter que demuestra el uso del cliente API.
+El proyecto incluye un directorio `example/` con una aplicación Flutter que demuestra el uso del cliente API con el patrón Ports & Adapters.
 
 Para ejecutar el ejemplo:
 
@@ -91,20 +101,20 @@ Para ejecutar el ejemplo:
 
 ### 3.1. Arquitectura
 
-El paquete sigue una estructura de Clean Architecture con las siguientes capas principales dentro de `lib/src/`:
+El paquete sigue una estructura de Clean Architecture con Ports & Adapters dentro de `lib/src/`:
 
-*   **`client/`**: La fachada pública del cliente API.
-*   **`domain/`**: Contiene las entidades, casos de uso (si los hubiera) y contratos de repositorio.
-*   **`data/`**: Implementaciones de los repositorios y fuentes de datos (datasources).
-*   **`core/`**: Utilidades compartidas, constantes y manejo de errores.
+*   **`presentation/`**: Patrón Ports & Adapters (contratos de UI y ApplicationController).
+*   **`domain/`**: Contiene las entidades, failures y contratos de repositorio.
+*   **`data/`**: Implementaciones de los repositorios, modelos y datasources.
+*   **`core/`**: Utilidades compartidas, constantes, Either propio y manejo HTTP.
 
 ### 3.2. Manejo de Errores
 
-Se utiliza el paquete `dartz` para un manejo funcional de errores, devolviendo un tipo `Either<FakeStoreFailure, T>`. Los tipos de fallas incluyen `ConnectionFailure`, `ServerFailure`, `NotFoundFailure`, e `InvalidRequestFailure`.
+Se utiliza una implementación propia de `Either<L, R>` para un manejo funcional de errores, devolviendo un tipo `Either<FakeStoreFailure, T>`. Los tipos de fallas incluyen `ConnectionFailure`, `ServerFailure`, `NotFoundFailure`, e `InvalidRequestFailure`.
 
 ### 3.3. Modelos de Datos
 
-Los modelos de datos (`Product`, `ProductRating`) son inmutables y utilizan `equatable` para simplificar la comparación de instancias. El parseo de JSON se realiza manualmente en las capas de datos.
+Los modelos de datos (`Product`, `ProductRating`) son inmutables con implementación manual de `==` y `hashCode`. El parseo de JSON se realiza manualmente en las capas de datos.
 
 ### 3.4. Análisis de Código
 
@@ -131,5 +141,5 @@ adb -s emulator-5554 shell ping -c 2 fakestoreapi.com
 ## 5. Dependencias Clave
 
 *   **`http`**: Para realizar solicitudes HTTP.
-*   **`dartz`**: Proporciona el tipo `Either` para el manejo funcional de errores.
-*   **`equatable`**: Facilita la comparación de objetos de valor.
+
+> **Nota:** Este paquete usa implementaciones propias de `Either` y comparación por valor, sin depender de paquetes externos como `dartz` o `equatable`.

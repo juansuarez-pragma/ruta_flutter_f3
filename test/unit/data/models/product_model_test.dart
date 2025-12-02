@@ -49,32 +49,6 @@ void main() {
       });
     });
 
-    group('toJson', () {
-      test('convierte modelo a JSON correctamente', () {
-        // Arrange
-        final model = createTestProductModel(
-          id: 1,
-          title: 'Test',
-          price: 25.50,
-          description: 'Desc',
-          category: 'cat',
-          image: 'img.jpg',
-        );
-
-        // Act
-        final json = model.toJson();
-
-        // Assert
-        expect(json['id'], 1);
-        expect(json['title'], 'Test');
-        expect(json['price'], 25.50);
-        expect(json['description'], 'Desc');
-        expect(json['category'], 'cat');
-        expect(json['image'], 'img.jpg');
-        expect(json['rating'], isA<Map<String, dynamic>>());
-      });
-    });
-
     group('toEntity', () {
       test('convierte modelo a Product correctamente', () {
         // Arrange

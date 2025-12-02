@@ -49,26 +49,6 @@ class ProductModel extends Product {
     );
   }
 
-  /// Convierte este modelo a un mapa JSON.
-  ///
-  /// ## Ejemplo
-  ///
-  /// ```dart
-  /// final product = ProductModel(...);
-  /// final json = product.toJson();
-  /// ```
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'price': price,
-      'description': description,
-      'category': category,
-      'image': image,
-      'rating': {'rate': rating.rate, 'count': rating.count},
-    };
-  }
-
   /// Convierte este modelo a una entidad de dominio.
   ///
   /// Útil para el mapeo en la capa de repositorio.

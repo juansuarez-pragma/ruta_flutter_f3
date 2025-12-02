@@ -4,9 +4,9 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 
 ## Descripción del Proyecto
 
-**fake_store_api_client** - Paquete Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture y manejo funcional de errores usando `Either<Failure, Success>`.
+**fake_store_api_client** - Paquete Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture, patrón Ports & Adapters y manejo funcional de errores usando `Either<Failure, Success>`.
 
-- Versión: 1.3.1
+- Versión: 1.4.0
 - SDK: Dart ^3.9.2, Flutter >=3.0.0
 - Dependencias: Solo `http`
 - Plataformas: iOS, Android, Windows, macOS, Linux (sin soporte Web aún)
@@ -41,9 +41,6 @@ dart pub publish
 lib/
 ├── fake_store_api_client.dart    # Punto de entrada único (exports públicos)
 └── src/
-    ├── client/                    # Capa Facade
-    │   ├── fake_store_client.dart # Cliente público
-    │   └── fake_store_config.dart
     ├── presentation/              # Patrón Ports & Adapters
     │   ├── contracts/             # Ports (interfaces de UI)
     │   │   ├── menu_option.dart   # Enum de opciones del menú
@@ -92,6 +89,32 @@ final controller = ApplicationController(
 await controller.executeOption(MenuOption.getAllProducts);
 ```
 
+## Uso Directo del Repositorio
+
+Para casos donde no se necesita el patrón Ports & Adapters:
+
+```dart
+import 'package:fake_store_api_client/fake_store_api_client.dart';
+import 'package:http/http.dart' as http;
+
+final datasource = FakeStoreDatasource(
+  apiClient: ApiClientImpl(
+    client: http.Client(),
+    baseUrl: 'https://fakestoreapi.com',
+    timeout: Duration(seconds: 30),
+    responseHandler: HttpResponseHandler(),
+  ),
+);
+final repository = ProductRepositoryImpl(datasource: datasource);
+
+// Usar directamente
+final result = await repository.getAllProducts();
+result.fold(
+  (failure) => print('Error: ${failure.message}'),
+  (products) => print('Productos: ${products.length}'),
+);
+```
+
 ## AppStrings - Textos Centralizados
 
 Los textos de UI están centralizados en `AppStrings` para facilitar mantenimiento e i18n:
@@ -126,7 +149,6 @@ HTTP Response → HttpResponseHandler (lanza Exception)
 
 | Patrón | Ubicación |
 |--------|-----------|
-| **Facade** | `FakeStoreClient` - oculta complejidad interna |
 | **Repository** | Contratos abstractos en domain, implementaciones en data |
 | **Strategy** | `HttpResponseHandler` - mapea códigos HTTP a excepciones |
 | **Factory** | Métodos `*Model.fromJson()` |
@@ -138,14 +160,14 @@ HTTP Response → HttpResponseHandler (lanza Exception)
 |-------|----------------------|
 | Nueva entidad | `domain/entities/` + barrel file |
 | Nuevo endpoint | `core/constants/api_endpoints.dart` |
-| Nuevo método API | `ProductRepository` (contrato) + `ProductRepositoryImpl` (impl) + `FakeStoreClient` |
+| Nuevo método API | `ProductRepository` (contrato) + `ProductRepositoryImpl` (impl) |
 | Nuevo tipo de failure | `fake_store_failure.dart` (agregar a sealed class) |
 | Nuevo manejo código HTTP | `HttpStatusCodes` + `HttpResponseHandler._strategies` |
 
 ## Convenciones de Código
 
 - **Entities**: Inmutables, sin serialización, constructores `const`
-- **Models**: Extienden entities, incluyen `fromJson`/`toJson`/`toEntity()`
+- **Models**: Extienden entities, incluyen `fromJson`/`toEntity()`
 - **Repositories**: Retornan `Either`, nunca lanzan excepciones
 - **Documentación**: Comentarios `///` en toda la API pública
 
@@ -154,7 +176,6 @@ HTTP Response → HttpResponseHandler (lanza Exception)
 ```dart
 // lib/fake_store_api_client.dart exporta:
 export 'src/core/either/either.dart';           // Either, Left, Right
-export 'src/client/client.dart';                // FakeStoreClient, FakeStoreConfig
 export 'src/domain/entities/entities.dart';     // Product, ProductRating
 export 'src/domain/failures/failures.dart';     // Subclases de FakeStoreFailure
 export 'src/presentation/presentation.dart';    // UserInterface, MenuOption, ApplicationController
@@ -162,6 +183,7 @@ export 'src/domain/repositories/repositories.dart'; // ProductRepository
 export 'src/data/datasources/datasources.dart'; // ApiClient, ApiClientImpl, FakeStoreDatasource
 export 'src/data/repositories/repositories.dart'; // ProductRepositoryImpl
 export 'src/core/network/network.dart';         // HttpResponseHandler, HttpStatusCodes
+export 'src/core/constants/app_strings.dart';   // AppStrings
 ```
 
 ## Problema DNS en Emulador Android

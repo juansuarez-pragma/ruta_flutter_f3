@@ -3,7 +3,7 @@
 [![Pub Points](https://img.shields.io/badge/pub%20points-160%2F160-brightgreen)](https://pub.dev/packages/fake_store_api_client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture y manejo funcional de errores.
+Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Architecture, patrón Ports & Adapters y manejo funcional de errores.
 
 ## Características
 
@@ -13,6 +13,7 @@ Cliente Flutter para la [Fake Store API](https://fakestoreapi.com/) con Clean Ar
 - Obtener productos por categoría
 - Manejo funcional de errores con `Either<Failure, Success>`
 - Clean Architecture con separación de capas
+- Patrón Ports & Adapters (Arquitectura Hexagonal)
 - Sealed classes para pattern matching exhaustivo
 - Sin dependencias externas innecesarias (solo `http`)
 - Soporte multiplataforma: iOS, Android, Windows, macOS, Linux
@@ -39,15 +40,26 @@ dependencies:
 
 ## Uso Básico
 
+### Usando el Repositorio Directamente
+
 ```dart
 import 'package:fake_store_api_client/fake_store_api_client.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
-  // Crear el cliente
-  final client = FakeStoreClient();
+  // Crear infraestructura
+  final datasource = FakeStoreDatasource(
+    apiClient: ApiClientImpl(
+      client: http.Client(),
+      baseUrl: 'https://fakestoreapi.com',
+      timeout: Duration(seconds: 30),
+      responseHandler: HttpResponseHandler(),
+    ),
+  );
+  final repository = ProductRepositoryImpl(datasource: datasource);
 
   // Obtener todos los productos
-  final result = await client.getProducts();
+  final result = await repository.getAllProducts();
 
   result.fold(
     (failure) => print('Error: ${failure.message}'),
@@ -58,20 +70,30 @@ void main() async {
       }
     },
   );
-
-  // Liberar recursos
-  client.dispose();
 }
 ```
 
-## Métodos Disponibles
+### Usando el Patrón Ports & Adapters
 
-### getProducts()
+Para aplicaciones con UI, usa `ApplicationController` con tu implementación de `UserInterface`:
+
+```dart
+final controller = ApplicationController(
+  ui: MiUserInterface(), // Tu implementación
+  repository: repository,
+);
+
+await controller.executeOption(MenuOption.getAllProducts);
+```
+
+## Métodos del Repositorio
+
+### getAllProducts()
 
 Obtiene todos los productos de la tienda.
 
 ```dart
-final result = await client.getProducts();
+final result = await repository.getAllProducts();
 result.fold(
   (failure) => print('Error: ${failure.message}'),
   (products) => print('Productos: ${products.length}'),
@@ -83,7 +105,7 @@ result.fold(
 Obtiene un producto específico por su ID.
 
 ```dart
-final result = await client.getProductById(1);
+final result = await repository.getProductById(1);
 result.fold(
   (failure) {
     if (failure is NotFoundFailure) {
@@ -94,12 +116,12 @@ result.fold(
 );
 ```
 
-### getCategories()
+### getAllCategories()
 
 Obtiene todas las categorías disponibles.
 
 ```dart
-final result = await client.getCategories();
+final result = await repository.getAllCategories();
 result.fold(
   (failure) => print('Error: ${failure.message}'),
   (categories) {
@@ -116,23 +138,10 @@ result.fold(
 Obtiene productos de una categoría específica.
 
 ```dart
-final result = await client.getProductsByCategory('electronics');
+final result = await repository.getProductsByCategory('electronics');
 result.fold(
   (failure) => print('Error: ${failure.message}'),
   (products) => print('Productos en electronics: ${products.length}'),
-);
-```
-
-## Configuración Personalizada
-
-Puedes personalizar la URL base y el timeout:
-
-```dart
-final client = FakeStoreClient(
-  config: FakeStoreConfig(
-    baseUrl: 'https://fakestoreapi.com',
-    timeout: Duration(seconds: 60),
-  ),
 );
 ```
 
@@ -150,7 +159,7 @@ El paquete usa el tipo `Either<FakeStoreFailure, T>` para manejo funcional de er
 ### Ejemplo con Pattern Matching
 
 ```dart
-final result = await client.getProductById(1);
+final result = await repository.getProductById(1);
 
 switch (result) {
   case Left(value: final failure):
@@ -198,6 +207,7 @@ class ProductRating {
 
 El paquete incluye un ejemplo completo en Flutter que demuestra:
 
+- Patrón Ports & Adapters en acción
 - Listado de productos en grid
 - Filtrado por categorías
 - Detalle de producto
@@ -212,13 +222,13 @@ flutter run
 
 ## Arquitectura
 
-El paquete está construido con Clean Architecture:
+El paquete está construido con Clean Architecture y patrón Ports & Adapters:
 
 ```
 lib/
 ├── fake_store_api_client.dart  # API pública
 └── src/
-    ├── client/                  # Fachada pública
+    ├── presentation/            # Ports & Adapters
     ├── domain/                  # Entidades y contratos
     ├── data/                    # Implementaciones
     └── core/                    # Utilidades compartidas

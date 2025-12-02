@@ -46,9 +46,6 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  /// Cliente del paquete fake_store_api_client.
-  final _client = FakeStoreClient();
-
   /// Controlador de la aplicación (Ports & Adapters).
   late final ApplicationController _controller;
 
@@ -174,7 +171,6 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   void dispose() {
-    _client.dispose();
     super.dispose();
   }
 

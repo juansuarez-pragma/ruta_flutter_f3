@@ -1,7 +1,10 @@
 /// Cliente Flutter para la Fake Store API.
 ///
 /// Este paquete proporciona un cliente completo para interactuar con
-/// la [Fake Store API](https://fakestoreapi.com/), incluyendo:
+/// la [Fake Store API](https://fakestoreapi.com/), implementando el
+/// patrón Ports & Adapters (Arquitectura Hexagonal).
+///
+/// ## Características
 ///
 /// - Obtener todos los productos
 /// - Obtener un producto por ID
@@ -12,31 +15,41 @@
 ///
 /// ```dart
 /// import 'package:fake_store_api_client/fake_store_api_client.dart';
+/// import 'package:http/http.dart' as http;
 ///
 /// void main() async {
-///   final client = FakeStoreClient();
+///   // Crear infraestructura
+///   final datasource = FakeStoreDatasource(
+///     apiClient: ApiClientImpl(
+///       client: http.Client(),
+///       baseUrl: 'https://fakestoreapi.com',
+///       timeout: Duration(seconds: 30),
+///       responseHandler: HttpResponseHandler(),
+///     ),
+///   );
+///   final repository = ProductRepositoryImpl(datasource: datasource);
 ///
-///   // Obtener productos
-///   final result = await client.getProducts();
+///   // Usar el repositorio directamente
+///   final result = await repository.getAllProducts();
 ///   result.fold(
 ///     (failure) => print('Error: ${failure.message}'),
 ///     (products) => print('Se encontraron ${products.length} productos'),
 ///   );
-///
-///   // Liberar recursos
-///   client.dispose();
 /// }
 /// ```
 ///
-/// ## Configuración personalizada
+/// ## Patrón Ports & Adapters
+///
+/// Para aplicaciones con UI, use [ApplicationController] con una
+/// implementación de [UserInterface]:
 ///
 /// ```dart
-/// final client = FakeStoreClient(
-///   config: FakeStoreConfig(
-///     baseUrl: 'https://fakestoreapi.com',
-///     timeout: Duration(seconds: 60),
-///   ),
+/// final controller = ApplicationController(
+///   ui: MiUserInterface(), // Tu implementación
+///   repository: repository,
 /// );
+///
+/// await controller.executeOption(MenuOption.getAllProducts);
 /// ```
 ///
 /// ## Manejo de errores
@@ -45,7 +58,7 @@
 /// Esto permite un manejo funcional de errores:
 ///
 /// ```dart
-/// final result = await client.getProductById(1);
+/// final result = await repository.getProductById(1);
 ///
 /// // Opción 1: fold
 /// result.fold(
@@ -72,9 +85,6 @@ library;
 
 // API Pública - Either (tipo propio)
 export 'src/core/either/either.dart';
-
-// API Pública - Cliente
-export 'src/client/client.dart';
 
 // API Pública - Entidades del dominio
 export 'src/domain/entities/entities.dart';

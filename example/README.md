@@ -1,9 +1,10 @@
 # Fake Store API Client - Example
 
-Aplicación Flutter de ejemplo que demuestra el uso del paquete `fake_store_api_client`.
+Aplicación Flutter de ejemplo que demuestra el uso del paquete `fake_store_api_client` con el patrón Ports & Adapters.
 
 ## Funcionalidades demostradas
 
+- Patrón Ports & Adapters (Arquitectura Hexagonal)
 - Lectura de productos desde la Fake Store API
 - Lectura de categorías
 - Filtrado de productos por categoría
@@ -21,30 +22,49 @@ flutter run
 
 ## Uso del paquete
 
+### Con Patrón Ports & Adapters (recomendado para UI)
+
 ```dart
 import 'package:fake_store_api_client/fake_store_api_client.dart';
+import 'package:http/http.dart' as http;
 
-// Crear cliente
-final client = FakeStoreClient();
+// Crear infraestructura
+final datasource = FakeStoreDatasource(
+  apiClient: ApiClientImpl(
+    client: http.Client(),
+    baseUrl: 'https://fakestoreapi.com',
+    timeout: Duration(seconds: 30),
+    responseHandler: HttpResponseHandler(),
+  ),
+);
+final repository = ProductRepositoryImpl(datasource: datasource);
 
-// Obtener productos
-final result = await client.getProducts();
+// Crear controlador con tu adapter de UI
+final controller = ApplicationController(
+  ui: MiFlutterUserInterface(),
+  repository: repository,
+);
 
-// Manejar resultado con Either
+// Ejecutar operaciones
+await controller.executeOption(MenuOption.getAllProducts);
+```
+
+### Uso directo del repositorio
+
+```dart
+final result = await repository.getAllProducts();
+
 result.fold(
   (failure) => print('Error: ${failure.message}'),
   (products) => print('Productos: ${products.length}'),
 );
-
-// Liberar recursos
-client.dispose();
 ```
 
-## Métodos disponibles
+## Métodos del repositorio
 
 | Método | Descripción |
 |--------|-------------|
-| `getProducts()` | Obtiene todos los productos |
+| `getAllProducts()` | Obtiene todos los productos |
 | `getProductById(int id)` | Obtiene un producto por ID |
-| `getCategories()` | Obtiene todas las categorías |
+| `getAllCategories()` | Obtiene todas las categorías |
 | `getProductsByCategory(String category)` | Obtiene productos por categoría |

@@ -25,19 +25,6 @@ class ProductRatingModel extends ProductRating {
     );
   }
 
-  /// Convierte este modelo a un mapa JSON.
-  ///
-  /// ## Ejemplo
-  ///
-  /// ```dart
-  /// final rating = ProductRatingModel(rate: 4.5, count: 120);
-  /// final json = rating.toJson();
-  /// // {'rate': 4.5, 'count': 120}
-  /// ```
-  Map<String, dynamic> toJson() {
-    return {'rate': rate, 'count': count};
-  }
-
   /// Convierte este modelo a una entidad de dominio.
   ///
   /// Útil para el mapeo en la capa de repositorio.
