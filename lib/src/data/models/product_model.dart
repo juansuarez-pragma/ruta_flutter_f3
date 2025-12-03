@@ -1,12 +1,8 @@
 import 'package:fake_store_api_client/src/data/models/product_rating_model.dart';
 import 'package:fake_store_api_client/src/domain/entities/entities.dart';
 
-/// Modelo de datos para un producto.
-///
-/// Extiende [Product] y añade métodos de serialización JSON.
-/// Se usa en la capa de datos para transformar respuestas de la API.
+/// Modelo de datos para deserialización JSON de [Product].
 class ProductModel extends Product {
-  /// Crea una nueva instancia de [ProductModel].
   const ProductModel({
     required super.id,
     required super.title,
@@ -17,24 +13,6 @@ class ProductModel extends Product {
     required super.rating,
   });
 
-  /// Crea un [ProductModel] desde un mapa JSON.
-  ///
-  /// [json] debe contener todas las claves requeridas del producto.
-  ///
-  /// ## Ejemplo
-  ///
-  /// ```dart
-  /// final json = {
-  ///   'id': 1,
-  ///   'title': 'Camiseta',
-  ///   'price': 29.99,
-  ///   'description': 'Una camiseta cómoda',
-  ///   'category': 'ropa',
-  ///   'image': 'https://example.com/image.jpg',
-  ///   'rating': {'rate': 4.5, 'count': 120},
-  /// };
-  /// final product = ProductModel.fromJson(json);
-  /// ```
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id'] as int,
@@ -49,9 +27,6 @@ class ProductModel extends Product {
     );
   }
 
-  /// Convierte este modelo a una entidad de dominio.
-  ///
-  /// Útil para el mapeo en la capa de repositorio.
   Product toEntity() {
     return Product(
       id: id,

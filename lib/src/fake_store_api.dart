@@ -11,6 +11,9 @@ import 'package:fake_store_api_client/src/domain/repositories/product_repository
 /// Esta clase proporciona un factory para crear una instancia configurada
 /// del repositorio, ocultando los detalles de implementación.
 ///
+/// Esta librería está diseñada exclusivamente para conectarse a
+/// [Fake Store API](https://fakestoreapi.com/).
+///
 /// ## Uso básico
 ///
 /// ```dart
@@ -27,24 +30,22 @@ import 'package:fake_store_api_client/src/domain/repositories/product_repository
 /// );
 /// ```
 ///
-/// ## Con configuración personalizada
+/// ## Con timeout personalizado
 ///
 /// ```dart
 /// final repository = FakeStoreApi.createRepository(
-///   baseUrl: 'https://mi-api.com',
 ///   timeout: Duration(seconds: 60),
 /// );
 /// ```
 abstract final class FakeStoreApi {
-  /// URL base por defecto de la Fake Store API.
-  static const String defaultBaseUrl = 'https://fakestoreapi.com';
+  /// URL de la Fake Store API.
+  static const String _baseUrl = 'https://fakestoreapi.com';
 
   /// Timeout por defecto para las solicitudes HTTP.
   static const Duration defaultTimeout = Duration(seconds: 30);
 
   /// Crea una instancia de [ProductRepository] lista para usar.
   ///
-  /// [baseUrl] es la URL base de la API. Por defecto usa la Fake Store API.
   /// [timeout] es el tiempo máximo de espera para las solicitudes HTTP.
   /// [httpClient] permite inyectar un cliente HTTP personalizado (útil para testing).
   ///
@@ -66,7 +67,6 @@ abstract final class FakeStoreApi {
   /// final electronics = await repository.getProductsByCategory('electronics');
   /// ```
   static ProductRepository createRepository({
-    String baseUrl = defaultBaseUrl,
     Duration timeout = defaultTimeout,
     http.Client? httpClient,
   }) {
@@ -74,7 +74,7 @@ abstract final class FakeStoreApi {
     final responseHandler = HttpResponseHandler();
     final apiClient = ApiClientImpl(
       client: client,
-      baseUrl: baseUrl,
+      baseUrl: _baseUrl,
       timeout: timeout,
       responseHandler: responseHandler,
     );

@@ -22,11 +22,10 @@
 /// }
 /// ```
 ///
-/// ## Configuración personalizada
+/// ## Timeout personalizado
 ///
 /// ```dart
 /// final repository = FakeStoreApi.createRepository(
-///   baseUrl: 'https://mi-api.com',
 ///   timeout: Duration(seconds: 60),
 /// );
 /// ```

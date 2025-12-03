@@ -60,11 +60,10 @@ import 'package:fake_store_api_client/fake_store_api_client.dart';
 | `Either`, `Left`, `Right` | Tipo para manejo de errores |
 | `FakeStoreFailure` | Clase base de errores (sealed) |
 
-## Configuración Personalizada
+## Timeout Personalizado
 
 ```dart
 final repository = FakeStoreApi.createRepository(
-  baseUrl: 'https://mi-api.com',
   timeout: Duration(seconds: 60),
 );
 ```

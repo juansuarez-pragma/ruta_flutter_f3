@@ -5,16 +5,10 @@ import 'package:fake_store_api_client/src/data/datasources/datasources.dart';
 import 'package:fake_store_api_client/src/data/models/models.dart';
 import 'package:fake_store_api_client/src/domain/domain.dart';
 
-/// Implementación del repositorio de productos.
-///
-/// Coordina entre el datasource y la capa de dominio,
-/// transformando modelos en entidades y excepciones en failures.
+/// Implementación de [ProductRepository].
 class ProductRepositoryImpl implements ProductRepository {
   final FakeStoreDatasource _datasource;
 
-  /// Crea una nueva instancia de [ProductRepositoryImpl].
-  ///
-  /// [datasource] es el datasource para acceder a la API.
   ProductRepositoryImpl({required FakeStoreDatasource datasource})
     : _datasource = datasource;
 
@@ -51,15 +45,10 @@ class ProductRepositoryImpl implements ProductRepository {
     });
   }
 
-  /// Mapea una lista de modelos a entidades.
   List<Product> _mapModelsToEntities(List<ProductModel> models) {
     return models.map((model) => model.toEntity()).toList();
   }
 
-  /// Ejecuta una operación y mapea excepciones a failures.
-  ///
-  /// Centraliza el manejo de errores para todas las operaciones
-  /// del repositorio.
   Future<Either<FakeStoreFailure, T>> _handleRequest<T>(
     Future<T> Function() request,
   ) async {

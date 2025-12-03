@@ -1,50 +1,15 @@
 import 'package:fake_store_api_client/src/domain/entities/product_rating.dart';
 
 /// Representa un producto de la tienda.
-///
-/// Esta clase es inmutable y proporciona comparación por valor.
-///
-/// ## Ejemplo
-///
-/// ```dart
-/// final product = Product(
-///   id: 1,
-///   title: 'Camiseta Premium',
-///   price: 29.99,
-///   description: 'Una camiseta de alta calidad',
-///   category: 'ropa',
-///   image: 'https://example.com/image.jpg',
-///   rating: ProductRating(rate: 4.5, count: 120),
-/// );
-///
-/// print('${product.title} - \$${product.price}');
-/// ```
 class Product {
-  /// Identificador único del producto.
   final int id;
-
-  /// Nombre o título del producto.
   final String title;
-
-  /// Precio del producto en dólares.
   final double price;
-
-  /// Descripción detallada del producto.
   final String description;
-
-  /// Categoría a la que pertenece el producto.
   final String category;
-
-  /// URL de la imagen del producto.
   final String image;
-
-  /// Calificación del producto.
   final ProductRating rating;
 
-  /// Crea una nueva instancia de [Product].
-  ///
-  /// Todos los parámetros son requeridos para garantizar
-  /// la integridad de los datos del producto.
   const Product({
     required this.id,
     required this.title,
