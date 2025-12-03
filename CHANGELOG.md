@@ -6,6 +6,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
 - Soporte para Cart, Users y Login API
 
+## [1.0.2] - 2025-12-03
+
+### Agregado
+
+- CI/CD con GitHub Actions
+- Pre-commit hook para formateo automático de Dart
+
 ## [1.0.1] - 2025-12-03
 
 ### Cambiado

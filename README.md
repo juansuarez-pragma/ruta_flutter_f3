@@ -11,7 +11,7 @@ Cliente Flutter para [Fake Store API](https://fakestoreapi.com/) con manejo func
 
 ```yaml
 dependencies:
-  fake_store_api_client: ^1.0.0
+  fake_store_api_client: ^1.0.2
 ```
 
 O ejecuta:
