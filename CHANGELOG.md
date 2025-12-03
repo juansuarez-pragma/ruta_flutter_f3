@@ -18,11 +18,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 ### Características
 
 - Clean Architecture (domain, data, core)
-- Sin dependencias externas excepto `http`
-- URL fija a `https://fakestoreapi.com/`
-- Soporte: iOS, Android, Windows, macOS, Linux
+- URL a `https://fakestoreapi.com/`
+- Soporte: Android, iOS, Web
 
 ## [Unreleased]
 
 - Soporte para Cart, Users y Login API
-- Soporte para plataforma Web
