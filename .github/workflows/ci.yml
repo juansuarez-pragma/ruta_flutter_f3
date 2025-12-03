@@ -22,7 +22,7 @@ jobs:
       # Instala Flutter con cache habilitado
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"  # Versión fija para reproducibilidad
+          flutter-version: "3.38.3"  # Versión fija para reproducibilidad
           channel: stable
           cache: true  # Reduce tiempo de ~2min a ~10seg
 
