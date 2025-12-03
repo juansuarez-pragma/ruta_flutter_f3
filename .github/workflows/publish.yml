@@ -47,16 +47,20 @@ jobs:
         with:
           ref: "v${{ needs.create-tag.outputs.version }}"
 
-      # Instala Dart SDK con soporte OIDC
-      - uses: dart-lang/setup-dart@v1
+      # Instala Flutter con soporte OIDC
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.3"
+          channel: stable
+          cache: true
 
       # Instala dependencias
-      - run: dart pub get
+      - run: flutter pub get
 
       # Valida el paquete sin publicar
       - name: Dry run
-        run: dart pub publish --dry-run
+        run: flutter pub publish --dry-run
 
       # Publica a pub.dev (autenticación OIDC automática)
       - name: Publish
-        run: dart pub publish --force
+        run: flutter pub publish --force
