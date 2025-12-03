@@ -1,6 +1,6 @@
 name: fake_store_api_client
 description: "Cliente Flutter para la Fake Store API con Clean Architecture y manejo funcional de errores."
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/juansuarez-pragma/ruta_flutter_f3
 repository: https://github.com/juansuarez-pragma/ruta_flutter_f3
 issue_tracker: https://github.com/juansuarez-pragma/ruta_flutter_f3/issues
@@ -9,6 +9,11 @@ topics:
   - http
   - rest-api
   - clean-architecture
+
+platforms:
+  android:
+  ios:
+  web:
 
 environment:
   sdk: ^3.9.2
