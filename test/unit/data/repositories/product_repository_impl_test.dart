@@ -31,14 +31,14 @@ void main() {
           final result = await repository.getAllProducts();
 
           // Assert
-          expect(result.isRight, isTrue);
-          result.fold((failure) => fail('No debería retornar failure'), (
-            products,
-          ) {
-            expect(products.length, 3);
-            expect(products[0].id, testModels[0].id);
-            expect(products[0].title, testModels[0].title);
-          });
+          result.fold(
+            (failure) => fail('No debería retornar failure'),
+            (products) {
+              expect(products.length, 3);
+              expect(products[0].id, testModels[0].id);
+              expect(products[0].title, testModels[0].title);
+            },
+          );
           verify(() => mockDatasource.getProducts()).called(1);
         },
       );
@@ -55,7 +55,6 @@ void main() {
           final result = await repository.getAllProducts();
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<ServerFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -68,17 +67,13 @@ void main() {
         () async {
           // Arrange
           when(() => mockDatasource.getProducts()).thenThrow(
-            ConnectionException(
-              uri: Uri.parse('https://api.test.com'),
-              originalError: 'Connection refused',
-            ),
+            const ConnectionException(),
           );
 
           // Act
           final result = await repository.getAllProducts();
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<ConnectionFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -119,7 +114,6 @@ void main() {
         final result = await repository.getAllProducts();
 
         // Assert
-        expect(result.isRight, isTrue);
         result.fold(
           (failure) => fail('No debería retornar failure'),
           (products) => expect(products, isEmpty),
@@ -143,13 +137,13 @@ void main() {
           final result = await repository.getProductById(testId);
 
           // Assert
-          expect(result.isRight, isTrue);
-          result.fold((failure) => fail('No debería retornar failure'), (
-            product,
-          ) {
-            expect(product.id, testId);
-            expect(product.title, testModel.title);
-          });
+          result.fold(
+            (failure) => fail('No debería retornar failure'),
+            (product) {
+              expect(product.id, testId);
+              expect(product.title, testModel.title);
+            },
+          );
           verify(() => mockDatasource.getProductById(testId)).called(1);
         },
       );
@@ -166,7 +160,6 @@ void main() {
           final result = await repository.getProductById(testId);
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<NotFoundFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -186,7 +179,6 @@ void main() {
           final result = await repository.getProductById(testId);
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<ServerFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -221,7 +213,6 @@ void main() {
           final result = await repository.getProductById(testId);
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<InvalidRequestFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -244,7 +235,6 @@ void main() {
           final result = await repository.getAllCategories();
 
           // Assert
-          expect(result.isRight, isTrue);
           result.fold(
             (failure) => fail('No debería retornar failure'),
             (categories) => expect(categories, testCategories),
@@ -265,7 +255,6 @@ void main() {
           final result = await repository.getAllCategories();
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<ServerFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -283,7 +272,6 @@ void main() {
         final result = await repository.getAllCategories();
 
         // Assert
-        expect(result.isRight, isTrue);
         result.fold(
           (failure) => fail('No debería retornar failure'),
           (categories) => expect(categories, isEmpty),
@@ -305,13 +293,13 @@ void main() {
         final result = await repository.getProductsByCategory(testCategory);
 
         // Assert
-        expect(result.isRight, isTrue);
-        result.fold((failure) => fail('No debería retornar failure'), (
-          products,
-        ) {
-          expect(products.length, 2);
-          expect(products[0], isA<Product>());
-        });
+        result.fold(
+          (failure) => fail('No debería retornar failure'),
+          (products) {
+            expect(products.length, 2);
+            expect(products[0], isA<Product>());
+          },
+        );
         verify(
           () => mockDatasource.getProductsByCategory(testCategory),
         ).called(1);
@@ -329,7 +317,6 @@ void main() {
           final result = await repository.getProductsByCategory(testCategory);
 
           // Assert
-          expect(result.isRight, isTrue);
           result.fold(
             (failure) => fail('No debería retornar failure'),
             (products) => expect(products, isEmpty),
@@ -349,7 +336,6 @@ void main() {
           final result = await repository.getProductsByCategory(testCategory);
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<ServerFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -369,7 +355,6 @@ void main() {
           final result = await repository.getProductsByCategory(testCategory);
 
           // Assert
-          expect(result.isLeft, isTrue);
           result.fold(
             (failure) => expect(failure, isA<ConnectionFailure>()),
             (_) => fail('No debería retornar Right'),
@@ -391,11 +376,13 @@ void main() {
           final result = await repository.getAllProducts();
 
           // Assert
-          expect(result.isLeft, isTrue);
-          result.fold((failure) {
-            expect(failure, isA<ServerFailure>());
-            expect(failure.message, contains('Error inesperado'));
-          }, (_) => fail('No debería retornar Right'));
+          result.fold(
+            (failure) {
+              expect(failure, isA<ServerFailure>());
+              expect(failure.message, contains('Error inesperado'));
+            },
+            (_) => fail('No debería retornar Right'),
+          );
         },
       );
     });

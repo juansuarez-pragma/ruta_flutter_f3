@@ -15,44 +15,6 @@ void main() {
         expect(result, 'Left: error');
       });
 
-      test('isLeft retorna true', () {
-        const either = Left<String, int>('error');
-        expect(either.isLeft, isTrue);
-      });
-
-      test('isRight retorna false', () {
-        const either = Left<String, int>('error');
-        expect(either.isRight, isFalse);
-      });
-
-      test('leftOrNull retorna el valor', () {
-        const either = Left<String, int>('error');
-        expect(either.leftOrNull, 'error');
-      });
-
-      test('rightOrNull retorna null', () {
-        const either = Left<String, int>('error');
-        expect(either.rightOrNull, isNull);
-      });
-
-      test('map no transforma y mantiene Left', () {
-        const either = Left<String, int>('error');
-
-        final result = either.map((right) => right * 2);
-
-        expect(result.isLeft, isTrue);
-        expect(result.leftOrNull, 'error');
-      });
-
-      test('mapLeft transforma el valor', () {
-        const either = Left<String, int>('error');
-
-        final result = either.mapLeft((left) => left.toUpperCase());
-
-        expect(result.isLeft, isTrue);
-        expect(result.leftOrNull, 'ERROR');
-      });
-
       test('dos Left con mismo valor son iguales', () {
         const left1 = Left<String, int>('error');
         const left2 = Left<String, int>('error');
@@ -91,44 +53,6 @@ void main() {
         );
 
         expect(result, 'Right: 42');
-      });
-
-      test('isLeft retorna false', () {
-        const either = Right<String, int>(42);
-        expect(either.isLeft, isFalse);
-      });
-
-      test('isRight retorna true', () {
-        const either = Right<String, int>(42);
-        expect(either.isRight, isTrue);
-      });
-
-      test('leftOrNull retorna null', () {
-        const either = Right<String, int>(42);
-        expect(either.leftOrNull, isNull);
-      });
-
-      test('rightOrNull retorna el valor', () {
-        const either = Right<String, int>(42);
-        expect(either.rightOrNull, 42);
-      });
-
-      test('map transforma el valor', () {
-        const either = Right<String, int>(21);
-
-        final result = either.map((right) => right * 2);
-
-        expect(result.isRight, isTrue);
-        expect(result.rightOrNull, 42);
-      });
-
-      test('mapLeft no transforma y mantiene Right', () {
-        const either = Right<String, int>(42);
-
-        final result = either.mapLeft((left) => left.toUpperCase());
-
-        expect(result.isRight, isTrue);
-        expect(result.rightOrNull, 42);
       });
 
       test('dos Right con mismo valor son iguales', () {

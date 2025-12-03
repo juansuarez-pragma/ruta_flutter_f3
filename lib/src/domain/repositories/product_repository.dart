@@ -7,9 +7,6 @@ import 'package:fake_store_api_client/src/domain/failures/failures.dart';
 /// Define las operaciones disponibles para acceder a los productos
 /// de la Fake Store API.
 ///
-/// Esta interfaz sigue el principio de inversión de dependencias (DIP):
-/// la capa de dominio define el contrato, y la capa de datos lo implementa.
-///
 /// Todas las operaciones retornan [Either] para manejo funcional de errores:
 /// - [Left] contiene un [FakeStoreFailure] si ocurre un error
 /// - [Right] contiene el resultado exitoso

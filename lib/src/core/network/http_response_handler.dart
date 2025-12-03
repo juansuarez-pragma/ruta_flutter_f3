@@ -32,19 +32,16 @@ class HttpResponseHandler {
     // 400 Bad Request: solicitud mal formada o inválida
     HttpStatusCodes.badRequest: (response) => throw const ClientException(
       message: ErrorMessages.badRequest,
-      statusCode: HttpStatusCodes.badRequest,
     ),
 
     // 401 Unauthorized: requiere autenticación
     HttpStatusCodes.unauthorized: (response) => throw const ClientException(
       message: ErrorMessages.unauthorized,
-      statusCode: HttpStatusCodes.unauthorized,
     ),
 
     // 403 Forbidden: autenticado pero sin permisos
     HttpStatusCodes.forbidden: (response) => throw const ClientException(
       message: ErrorMessages.forbidden,
-      statusCode: HttpStatusCodes.forbidden,
     ),
 
     // 404 Not Found: recurso no existe
@@ -58,38 +55,31 @@ class HttpResponseHandler {
     HttpStatusCodes.unprocessableEntity: (response) =>
         throw const ClientException(
           message: ErrorMessages.unprocessableEntity,
-          statusCode: HttpStatusCodes.unprocessableEntity,
         ),
 
     // 429 Too Many Requests: rate limiting
     HttpStatusCodes.tooManyRequests: (response) => throw const ClientException(
       message: ErrorMessages.tooManyRequests,
-      statusCode: HttpStatusCodes.tooManyRequests,
     ),
 
     // 500 Internal Server Error: error genérico del servidor
     HttpStatusCodes.internalServerError: (response) =>
-        throw const ServerException(
-          statusCode: HttpStatusCodes.internalServerError,
-        ),
+        throw const ServerException(),
 
     // 502 Bad Gateway: puerta de enlace incorrecta
     HttpStatusCodes.badGateway: (response) => throw const ServerException(
       message: ErrorMessages.badGateway,
-      statusCode: HttpStatusCodes.badGateway,
     ),
 
     // 503 Service Unavailable: servicio no disponible
     HttpStatusCodes.serviceUnavailable: (response) =>
         throw const ServerException(
           message: ErrorMessages.serviceUnavailable,
-          statusCode: HttpStatusCodes.serviceUnavailable,
         ),
 
     // 504 Gateway Timeout: tiempo de espera de gateway
     HttpStatusCodes.gatewayTimeout: (response) => throw const ServerException(
       message: ErrorMessages.gatewayTimeout,
-      statusCode: HttpStatusCodes.gatewayTimeout,
     ),
   };
 
@@ -127,7 +117,6 @@ class HttpResponseHandler {
         message: ErrorMessages.serverErrorWithDescription(
           HttpStatusCodes.getDescription(statusCode),
         ),
-        statusCode: statusCode,
       );
     }
 
@@ -137,14 +126,12 @@ class HttpResponseHandler {
         message: ErrorMessages.clientErrorWithDescription(
           HttpStatusCodes.getDescription(statusCode),
         ),
-        statusCode: statusCode,
       );
     }
 
     // Fallback para cualquier otro código no esperado
     throw ServerException(
       message: ErrorMessages.unexpectedStatusCode(statusCode),
-      statusCode: statusCode,
     );
   }
 }

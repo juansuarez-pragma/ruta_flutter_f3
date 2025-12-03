@@ -69,10 +69,6 @@
 /// - [InvalidRequestFailure]: Solicitud inválida (4xx)
 library;
 
-// ============================================================================
-// API PÚBLICA - Solo se exporta lo necesario para consumir la librería
-// ============================================================================
-
 // Punto de entrada principal - Factory para crear el repositorio
 export 'src/fake_store_api.dart' show FakeStoreApi;
 

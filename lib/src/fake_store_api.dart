@@ -6,12 +6,7 @@ import 'package:fake_store_api_client/src/data/datasources/fake_store_datasource
 import 'package:fake_store_api_client/src/data/repositories/product_repository_impl.dart';
 import 'package:fake_store_api_client/src/domain/repositories/product_repository.dart';
 
-/// Punto de entrada principal para usar la Fake Store API.
-///
-/// Esta clase proporciona un factory para crear una instancia configurada
-/// del repositorio, ocultando los detalles de implementación.
-///
-/// Esta librería está diseñada exclusivamente para conectarse a
+/// Esta librería está diseñada para conectarse a
 /// [Fake Store API](https://fakestoreapi.com/).
 ///
 /// ## Uso básico
@@ -47,7 +42,7 @@ abstract final class FakeStoreApi {
   /// Crea una instancia de [ProductRepository] lista para usar.
   ///
   /// [timeout] es el tiempo máximo de espera para las solicitudes HTTP.
-  /// [httpClient] permite inyectar un cliente HTTP personalizado (útil para testing).
+  /// [httpClient] permite inyectar un cliente HTTP personalizado
   ///
   /// ## Ejemplo
   ///

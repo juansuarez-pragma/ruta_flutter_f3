@@ -58,19 +58,11 @@ class ApiClientImpl implements ApiClient {
       final decodedJson = json.decode(response.body);
       return fromJson(decodedJson);
     } on TimeoutException {
-      throw ConnectionException(message: ErrorMessages.timeout, uri: uri);
-    } on SocketException catch (e) {
-      throw ConnectionException(
-        message: ErrorMessages.noInternet,
-        uri: uri,
-        originalError: e.message,
-      );
-    } on http.ClientException catch (e) {
-      throw ConnectionException(
-        message: ErrorMessages.connectionError,
-        uri: uri,
-        originalError: e.message,
-      );
+      throw const ConnectionException(message: ErrorMessages.timeout);
+    } on SocketException {
+      throw const ConnectionException(message: ErrorMessages.noInternet);
+    } on http.ClientException {
+      throw const ConnectionException(message: ErrorMessages.connectionError);
     } on FormatException catch (e) {
       throw ServerException(
         message: ErrorMessages.invalidResponseWithDetail(e.message),
@@ -96,19 +88,11 @@ class ApiClientImpl implements ApiClient {
           .map((item) => fromJsonList(item as Map<String, dynamic>))
           .toList();
     } on TimeoutException {
-      throw ConnectionException(message: ErrorMessages.timeout, uri: uri);
-    } on SocketException catch (e) {
-      throw ConnectionException(
-        message: ErrorMessages.noInternet,
-        uri: uri,
-        originalError: e.message,
-      );
-    } on http.ClientException catch (e) {
-      throw ConnectionException(
-        message: ErrorMessages.connectionError,
-        uri: uri,
-        originalError: e.message,
-      );
+      throw const ConnectionException(message: ErrorMessages.timeout);
+    } on SocketException {
+      throw const ConnectionException(message: ErrorMessages.noInternet);
+    } on http.ClientException {
+      throw const ConnectionException(message: ErrorMessages.connectionError);
     } on FormatException catch (e) {
       throw ServerException(
         message: ErrorMessages.invalidResponseWithDetail(e.message),
@@ -129,19 +113,11 @@ class ApiClientImpl implements ApiClient {
           json.decode(response.body) as List<dynamic>;
       return decodedJson.cast<T>();
     } on TimeoutException {
-      throw ConnectionException(message: ErrorMessages.timeout, uri: uri);
-    } on SocketException catch (e) {
-      throw ConnectionException(
-        message: ErrorMessages.noInternet,
-        uri: uri,
-        originalError: e.message,
-      );
-    } on http.ClientException catch (e) {
-      throw ConnectionException(
-        message: ErrorMessages.connectionError,
-        uri: uri,
-        originalError: e.message,
-      );
+      throw const ConnectionException(message: ErrorMessages.timeout);
+    } on SocketException {
+      throw const ConnectionException(message: ErrorMessages.noInternet);
+    } on http.ClientException {
+      throw const ConnectionException(message: ErrorMessages.connectionError);
     } on FormatException catch (e) {
       throw ServerException(
         message: ErrorMessages.invalidResponseWithDetail(e.message),

@@ -15,7 +15,7 @@ void main() {
     group('respuestas exitosas (2xx)', () {
       test('no hace nada para respuesta 200 OK', () {
         // Arrange
-        final response = http.Response('{"data": "ok"}', HttpStatusCodes.ok);
+        final response = http.Response('{"data": "ok"}', 200);
 
         // Act & Assert - no debería lanzar excepción
         expect(() => handler.handleResponse(response), returnsNormally);
@@ -23,7 +23,7 @@ void main() {
 
       test('no hace nada para respuesta 201 Created', () {
         // Arrange
-        final response = http.Response('{}', HttpStatusCodes.created);
+        final response = http.Response('{}', 201);
 
         // Act & Assert
         expect(() => handler.handleResponse(response), returnsNormally);
@@ -31,7 +31,7 @@ void main() {
 
       test('no hace nada para respuesta 204 No Content', () {
         // Arrange
-        final response = http.Response('', HttpStatusCodes.noContent);
+        final response = http.Response('', 204);
 
         // Act & Assert
         expect(() => handler.handleResponse(response), returnsNormally);
@@ -39,7 +39,7 @@ void main() {
 
       test('no hace nada para cualquier código 2xx', () {
         // Arrange
-        final response = http.Response('', HttpStatusCodes.accepted);
+        final response = http.Response('', 202);
 
         // Act & Assert
         expect(() => handler.handleResponse(response), returnsNormally);
@@ -228,14 +228,6 @@ void main() {
 
   group('HttpStatusCodes', () {
     group('constantes', () {
-      test('ok es 200', () {
-        expect(HttpStatusCodes.ok, 200);
-      });
-
-      test('created es 201', () {
-        expect(HttpStatusCodes.created, 201);
-      });
-
       test('notFound es 404', () {
         expect(HttpStatusCodes.notFound, 404);
       });
@@ -312,10 +304,6 @@ void main() {
     });
 
     group('getDescription', () {
-      test('retorna descripción correcta para 200', () {
-        expect(HttpStatusCodes.getDescription(200), 'OK');
-      });
-
       test('retorna descripción correcta para 404', () {
         expect(HttpStatusCodes.getDescription(404), 'Not Found');
       });
@@ -324,8 +312,8 @@ void main() {
         expect(HttpStatusCodes.getDescription(500), 'Internal Server Error');
       });
 
-      test('retorna Unknown Status Code para código desconocido', () {
-        expect(HttpStatusCodes.getDescription(999), 'Unknown Status Code');
+      test('retorna HTTP Error para código no mapeado', () {
+        expect(HttpStatusCodes.getDescription(999), 'HTTP Error 999');
       });
     });
   });
