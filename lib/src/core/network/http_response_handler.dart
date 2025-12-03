@@ -6,34 +6,26 @@ import 'package:http/http.dart' as http;
 /// Mapea códigos de estado HTTP a excepciones tipadas.
 class HttpResponseHandler {
   static final Map<int, void Function(http.Response)> _strategies = {
-    HttpStatusCodes.badRequest: (_) => throw const ClientException(
-      message: ErrorMessages.badRequest,
-    ),
-    HttpStatusCodes.unauthorized: (_) => throw const ClientException(
-      message: ErrorMessages.unauthorized,
-    ),
-    HttpStatusCodes.forbidden: (_) => throw const ClientException(
-      message: ErrorMessages.forbidden,
-    ),
+    HttpStatusCodes.badRequest: (_) =>
+        throw const ClientException(message: ErrorMessages.badRequest),
+    HttpStatusCodes.unauthorized: (_) =>
+        throw const ClientException(message: ErrorMessages.unauthorized),
+    HttpStatusCodes.forbidden: (_) =>
+        throw const ClientException(message: ErrorMessages.forbidden),
     HttpStatusCodes.notFound: (_) => throw const NotFoundException(),
     HttpStatusCodes.requestTimeout: (_) =>
         throw const ConnectionException(message: ErrorMessages.timeout),
-    HttpStatusCodes.unprocessableEntity: (_) => throw const ClientException(
-      message: ErrorMessages.unprocessableEntity,
-    ),
-    HttpStatusCodes.tooManyRequests: (_) => throw const ClientException(
-      message: ErrorMessages.tooManyRequests,
-    ),
+    HttpStatusCodes.unprocessableEntity: (_) =>
+        throw const ClientException(message: ErrorMessages.unprocessableEntity),
+    HttpStatusCodes.tooManyRequests: (_) =>
+        throw const ClientException(message: ErrorMessages.tooManyRequests),
     HttpStatusCodes.internalServerError: (_) => throw const ServerException(),
-    HttpStatusCodes.badGateway: (_) => throw const ServerException(
-      message: ErrorMessages.badGateway,
-    ),
-    HttpStatusCodes.serviceUnavailable: (_) => throw const ServerException(
-      message: ErrorMessages.serviceUnavailable,
-    ),
-    HttpStatusCodes.gatewayTimeout: (_) => throw const ServerException(
-      message: ErrorMessages.gatewayTimeout,
-    ),
+    HttpStatusCodes.badGateway: (_) =>
+        throw const ServerException(message: ErrorMessages.badGateway),
+    HttpStatusCodes.serviceUnavailable: (_) =>
+        throw const ServerException(message: ErrorMessages.serviceUnavailable),
+    HttpStatusCodes.gatewayTimeout: (_) =>
+        throw const ServerException(message: ErrorMessages.gatewayTimeout),
   };
 
   /// Procesa una respuesta HTTP y lanza excepciones según el código de estado.

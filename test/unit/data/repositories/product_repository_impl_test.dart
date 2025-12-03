@@ -31,14 +31,13 @@ void main() {
           final result = await repository.getAllProducts();
 
           // Assert
-          result.fold(
-            (failure) => fail('No debería retornar failure'),
-            (products) {
-              expect(products.length, 3);
-              expect(products[0].id, testModels[0].id);
-              expect(products[0].title, testModels[0].title);
-            },
-          );
+          result.fold((failure) => fail('No debería retornar failure'), (
+            products,
+          ) {
+            expect(products.length, 3);
+            expect(products[0].id, testModels[0].id);
+            expect(products[0].title, testModels[0].title);
+          });
           verify(() => mockDatasource.getProducts()).called(1);
         },
       );
@@ -66,9 +65,9 @@ void main() {
         'retorna Left ConnectionFailure cuando datasource lanza ConnectionException',
         () async {
           // Arrange
-          when(() => mockDatasource.getProducts()).thenThrow(
-            const ConnectionException(),
-          );
+          when(
+            () => mockDatasource.getProducts(),
+          ).thenThrow(const ConnectionException());
 
           // Act
           final result = await repository.getAllProducts();
@@ -137,13 +136,12 @@ void main() {
           final result = await repository.getProductById(testId);
 
           // Assert
-          result.fold(
-            (failure) => fail('No debería retornar failure'),
-            (product) {
-              expect(product.id, testId);
-              expect(product.title, testModel.title);
-            },
-          );
+          result.fold((failure) => fail('No debería retornar failure'), (
+            product,
+          ) {
+            expect(product.id, testId);
+            expect(product.title, testModel.title);
+          });
           verify(() => mockDatasource.getProductById(testId)).called(1);
         },
       );
@@ -293,13 +291,12 @@ void main() {
         final result = await repository.getProductsByCategory(testCategory);
 
         // Assert
-        result.fold(
-          (failure) => fail('No debería retornar failure'),
-          (products) {
-            expect(products.length, 2);
-            expect(products[0], isA<Product>());
-          },
-        );
+        result.fold((failure) => fail('No debería retornar failure'), (
+          products,
+        ) {
+          expect(products.length, 2);
+          expect(products[0], isA<Product>());
+        });
         verify(
           () => mockDatasource.getProductsByCategory(testCategory),
         ).called(1);
@@ -376,13 +373,10 @@ void main() {
           final result = await repository.getAllProducts();
 
           // Assert
-          result.fold(
-            (failure) {
-              expect(failure, isA<ServerFailure>());
-              expect(failure.message, contains('Error inesperado'));
-            },
-            (_) => fail('No debería retornar Right'),
-          );
+          result.fold((failure) {
+            expect(failure, isA<ServerFailure>());
+            expect(failure.message, contains('Error inesperado'));
+          }, (_) => fail('No debería retornar Right'));
         },
       );
     });

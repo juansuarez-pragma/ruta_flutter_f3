@@ -20,7 +20,8 @@ abstract class ErrorMessages {
   static const String serverError = 'Error del servidor';
   static const String badGateway = 'Puerta de enlace incorrecta';
   static const String serviceUnavailable = 'Servicio no disponible';
-  static const String gatewayTimeout = 'Tiempo de espera de la puerta de enlace';
+  static const String gatewayTimeout =
+      'Tiempo de espera de la puerta de enlace';
   static const String invalidResponse = 'Respuesta del servidor inválida';
 
   // Mensajes con parámetros

@@ -10,9 +10,13 @@ Cliente Flutter para [Fake Store API](https://fakestoreapi.com/) con manejo func
 
 ```yaml
 dependencies:
-  fake_store_api_client:
-    git:
-      url: https://github.com/usuario/fake_store_api_client.git
+  fake_store_api_client: ^1.0.0
+```
+
+O ejecuta:
+
+```bash
+flutter pub add fake_store_api_client
 ```
 
 ## Uso
