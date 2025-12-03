@@ -1,0 +1,62 @@
+# Publica a pub.dev cuando se mergea PR a main
+name: Publish
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]  # Se dispara al cerrar PR
+
+jobs:
+  create-tag:
+    name: Create Tag
+    runs-on: ubuntu-latest
+    # Solo ejecuta si el PR fue mergeado (no solo cerrado)
+    if: github.event.pull_request.merged == true
+    outputs:
+      version: ${{ steps.version.outputs.value }}  # Expone versión al job publish
+
+    steps:
+      # Descarga código de main (post-merge)
+      - uses: actions/checkout@v4
+
+      # Extrae versión del pubspec.yaml (ej: 1.0.1)
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2)
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+
+      # Crea y sube tag v1.0.1 a GitHub
+      - name: Push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ steps.version.outputs.value }}"
+          git push origin "v${{ steps.version.outputs.value }}"
+
+  publish:
+    name: Publish to pub.dev
+    needs: create-tag  # Espera a que el tag se cree
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Requerido para autenticación OIDC con pub.dev
+
+    steps:
+      # Descarga código del tag específico
+      - uses: actions/checkout@v4
+        with:
+          ref: "v${{ needs.create-tag.outputs.version }}"
+
+      # Instala Dart SDK con soporte OIDC
+      - uses: dart-lang/setup-dart@v1
+
+      # Instala dependencias
+      - run: dart pub get
+
+      # Valida el paquete sin publicar
+      - name: Dry run
+        run: dart pub publish --dry-run
+
+      # Publica a pub.dev (autenticación OIDC automática)
+      - name: Publish
+        run: dart pub publish --force
