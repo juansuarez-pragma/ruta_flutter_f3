@@ -1,0 +1,17 @@
+#!/bin/sh
+# Formatea archivos Dart en staging antes del commit
+
+# Obtiene archivos .dart agregados (A), copiados (C) o modificados (M)
+STAGED_DART_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.dart$')
+
+# Si hay archivos Dart en staging
+if [ -n "$STAGED_DART_FILES" ]; then
+    echo "Formatting Dart files..."
+    # Aplica formato a cada archivo
+    echo "$STAGED_DART_FILES" | xargs dart format
+    # Re-agrega los archivos formateados al staging
+    echo "$STAGED_DART_FILES" | xargs git add
+fi
+
+# Siempre permite el commit (exit 0 = éxito)
+exit 0

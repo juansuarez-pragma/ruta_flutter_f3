@@ -1,0 +1,42 @@
+# Ejecuta validaciones en PRs hacia develop
+name: CI
+
+on:
+  pull_request:
+    branches: [develop]  # Solo PRs a develop
+
+# Cancela ejecuciones previas del mismo PR
+concurrency:
+  group: ci-${{ github.head_ref }}  # Agrupa por rama origen
+  cancel-in-progress: true          # Cancela si hay nuevo push
+
+jobs:
+  test:
+    name: Format, Analyze & Test
+    runs-on: ubuntu-latest  # Runner gratuito de GitHub
+
+    steps:
+      # Descarga el código del PR
+      - uses: actions/checkout@v4
+
+      # Instala Flutter con cache habilitado
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.29.3"  # Versión fija para reproducibilidad
+          channel: stable
+          cache: true  # Reduce tiempo de ~2min a ~10seg
+
+      # Instala dependencias del pubspec.yaml
+      - run: flutter pub get
+
+      # Falla si hay archivos sin formatear
+      - name: Check format
+        run: dart format --set-exit-if-changed .
+
+      # Análisis estático, falla en warnings e infos
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      # Ejecuta todos los tests en test/
+      - name: Test
+        run: flutter test
